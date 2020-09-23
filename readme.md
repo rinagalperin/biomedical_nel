@@ -71,13 +71,17 @@ Final data output can be foud [here](training_data/output_data/training_data_4.j
 The process results in 2821 examples which are split into train-test sets according to a 90%-10% division, respectively (2538 train examples, 283 test examples). 
 
 ## Results
+The HRM's accuracy was **44.17%**.<br>
+The following table summarizes our results on the test set:
+
 (*) note that 'WINDOW_SIZE' represents the chosen number of words from each side (left and right) to the term.
 
-| WINDOW_SIZE  | Accuracy | Precision |  Recall | False negatives | False positives | True negatives | True positives |
-|:-------:|:--------:|:---------:|:-------:|:---------------:|:---------------:|:--------------:|:--------------:|
-|    3    |  88.693% |  86.555%  | 86.555% |        16       |        16       |       148      |       103      |
-|    4    |  85.866% |    87%    | 84.615% |        22       |        18       |       122      |       121      |
-|    5    |     -    |     -     |    -    |        -        |        -        |        -       |        -       |
+| WINDOW_SIZE | Accuracy | Precision |  Recall | False negatives | False positives | True negatives | True positives |
+|:-----------:|:--------:|:---------:|:-------:|:---------------:|:---------------:|:--------------:|:--------------:|
+|      2      |  87.986% |  84.733%  |  88.8%  |        14       |        20       |       138      |       111      |
+|      3      |  88.693% |  86.555%  | 86.555% |        16       |        16       |       148      |       103      |
+|      4      |  85.866% |    87%    | 84.615% |        22       |        18       |       122      |       121      |
+
 
 #### Example:<br>
 based on the context of the sentece, 'חולים' is not a medical term but part of a named location: 'קופות החולים'. The HRM's mistake is caught by the contextual relevance model:
@@ -90,7 +94,7 @@ Real answer: Wrong
 ```
 
 ## TODO
-- Attempt training using different #epoch values
+- Fine-tune model's hyper parameters.
 - Train for 2 other communities: Depression and Sclerosis.
 
 ## Acknowledgements
