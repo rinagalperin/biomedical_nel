@@ -28,7 +28,7 @@ the candidate match 'מוני' is mapped to UMLS 'Monit' which is a drug for che
 
 Intuitively, using the context of the word in the post can give better indication of whether or not it is an actual medical term or not. In the above case, 'מערכת כמוני' can imply that 'כמוני' is a type/name of a system and not a drug.
 
-We use n-grams for context analysis, i.e.- combinations of one or more words that represent entities, phrases, concepts, and themes that appear in the text. The exact process we chose is described in the _Training data construction_ section.
+We use context analysis, i.e.- combinations of one or more words that represent entities, phrases, concepts, and themes that appear in the text. The exact process we chose is described in the _Training data construction_ section.
 
 ## Training data construction
 We use the output from HRM and the manual annotations, which can be found [here](https://drive.google.com/file/d/17JTxutH15P3R-Wd4x3d5ulY22KW0vVUC/view?usp=sharing) and attempt to use a contextual relevance language model to improve
@@ -36,8 +36,8 @@ the results of the tagged UMLS entities.
 
 For each entry in the data (post), we go over the matches found and do the following per-match:
 
-1) <u>n-grams</u><br>
-Using the offset of the term we find the original word from the text and create a window around it (depending on the chosen n-gram value) _to get the word context_ of the term (n words to the left of the term and n words to the right). 
+1) <u>word context</u><br>
+Using the offset of the term we find the original word from the text and create a window around it (depending on the chosen WINDOW_SIZE value) _to get the word context_ of the term (WINDOW_SIZE words to the left of the term and WINDOW_SIZE words to the right). 
 
 2) <u>UMLS from HRM</u><br>
 We collect the UMLS from the HRM output (under 'umls_match')
@@ -66,12 +66,14 @@ For the given match we keep `1` as the label if the HRM UMLS matches with the an
 The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the _Training data construction_ section).
 
 #### Output
-Final data output can be foud [here](training_data/output_data/training_data_4.json).
+Final data output can be foud [here](training_data/output_data/training_data_4.json) (different outputs are created depending on the chosen window size).
 
 The process results in 2821 examples which are split into train-test sets according to a 90%-10% division, respectively (2538 train examples, 283 test examples). 
 
 ## Results
-| n-gram  | Accuracy | Precision |  Recall | False negatives | False positives | True negatives | True positives |
+(*) note that 'WINDOW_SIZE' represents the chosen number of words from each side (left and right) to the term.
+
+| WINDOW_SIZE  | Accuracy | Precision |  Recall | False negatives | False positives | True negatives | True positives |
 |:-------:|:--------:|:---------:|:-------:|:---------------:|:---------------:|:--------------:|:--------------:|
 |    3    |  88.693% |  86.555%  | 86.555% |        16       |        16       |       148      |       103      |
 |    4    |  85.866% |    87%    | 84.615% |        22       |        18       |       122      |       121      |
