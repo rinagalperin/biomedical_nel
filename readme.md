@@ -63,10 +63,13 @@ since in this case 'קרסול' is mapped to the drug Cresol (rather than the wo
 For the given match we add `1` if the HRM UMLS matches with the annotations' UMLS, and `0` otherwise. Notice that if the annotations' UMLS is `Nan` at this point, it means that the HRM UMLS does not fit either and therefore will return `0` as expected.
 
 #### Utilizing BERT QA structure
-The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = `1` if the HRM UMLS matches with the annotations' UMLS, and `0` otherwise).
+The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the _Training data construction_ section).
 
 ## Results
-xxxxxx
+| n-gram | Accuracy | Precision | Recall |
+| ------------- | ------------- | ------------- | ------------- |
+| 3  | 88.693%  |86.555%   |86.555%   |
+| 4  | 85.866%  |87%   |84.615%   |
 
 ## Acknowledgements
 + Yonatan Bitton's [MDTEL](https://github.com/yonatanbitton/mdtel) work.
