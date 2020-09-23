@@ -6,7 +6,7 @@ from bert.bert_code import tokenization, optimization
 # This is a path to an uncased (all lowercase) version of BERT
 
 
-def create_tokenizer_from_hub_module(bert_model_hub):
+def create_tokenizer_from_hub_module(bert_model_hub, do_lower=True):
     """Get the vocab file and casing info from the Hub module."""
     with tf.Graph().as_default():
         bert_module = hub.Module(bert_model_hub)
@@ -16,7 +16,7 @@ def create_tokenizer_from_hub_module(bert_model_hub):
                                                   tokenization_info["do_lower_case"]])
 
     return tokenization.FullTokenizer(
-        vocab_file=vocab_file, do_lower_case=do_lower_case)
+        vocab_file=vocab_file, do_lower_case=(do_lower_case and do_lower))
 
 
 
@@ -53,7 +53,7 @@ def create_model(is_predicting, input_ids, input_mask, segment_ids, labels,
   with tf.compat.v1.variable_scope("loss"):
 
     # Dropout helps prevent overfitting
-    output_layer = tf.compat.v1.nn.dropout(output_layer, keep_prob=0.9)
+    output_layer = tf.compat.v1.nn.dropout(output_layer, rate=0.1)
 
     logits = tf.compat.v1.matmul(output_layer, output_weights, transpose_b=True)
     logits = tf.compat.v1.nn.bias_add(logits, output_bias)

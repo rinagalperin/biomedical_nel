@@ -1,6 +1,6 @@
 import tensorflow as tf
 from bert.bert_code import run_classifier
-from bert.exmaple.cfg_example import *
+from bert.classification_exmaple.cfg_example import *
 from bert.utilty.utilty import model_fn_builder, create_tokenizer_from_hub_module
 
 

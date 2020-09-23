@@ -1,7 +1,7 @@
 # Run metric
 from bert.bert_code import run_classifier
 from bert.dataloader.aclimdb import aclImdb
-from bert.exmaple.cfg_example import *
+from bert.classification_exmaple.cfg_example import *
 from bert.utilty.utilty import create_tokenizer_from_hub_module, model_fn_builder
 import tensorflow as tf
 

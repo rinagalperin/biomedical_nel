@@ -1,6 +1,8 @@
 import tensorflow as tf
 from datetime import datetime
-from bert.exmaple.cfg_example import *
+
+from bert.dataloader.contextual_relevance import ContextualRelevance
+from bert.umls_classification.cfg import *
 from bert.bert_code import run_classifier
 from bert.dataloader.aclimdb import aclImdb
 from bert.utilty.utilty import create_tokenizer_from_hub_module, model_fn_builder
@@ -10,28 +12,22 @@ tf.compat.v1.disable_v2_behavior()
 print('***** Model output directory: {} *****'.format(OUTPUT_DIR))
 
 # get data from data loader
-train, test = aclImdb().get_data()
+train, _ = ContextualRelevance(data_flie_path).get_data()
 print(train.columns)
 
 # Use the InputExample class from BERT's run_classifier code to create examples from the data
 train_InputExamples = train.apply(
     lambda x: run_classifier.InputExample(guid=None,  # Globally unique ID for bookkeeping, unused in this example
                                           text_a=x[DATA_COLUMN],
-                                          text_b=None,
+                                          text_b=x[ANSWER_COLUMN],
                                           label=x[LABEL_COLUMN]), axis=1)
 
-test_InputExamples = test.apply(lambda x: run_classifier.InputExample(guid=None,
-                                                                      text_a=x[DATA_COLUMN],
-                                                                      text_b=None,
-                                                                      label=x[LABEL_COLUMN]), axis=1)
-
 # get bert_code tokenizer form hub model
-tokenizer = create_tokenizer_from_hub_module(BERT_MODEL_HUB)
-print(tokenizer.tokenize("This here's an example of using the BERT tokenizer"))
+tokenizer = create_tokenizer_from_hub_module(BERT_MODEL_HUB , False)
+print(tokenizer.tokenize("שלום אנחנו רינה ושחר"))
 
 # Convert our train and test features to InputFeatures that BERT understands.
 train_features = run_classifier.convert_examples_to_features(train_InputExamples, label_list, MAX_SEQ_LENGTH, tokenizer)
-test_features = run_classifier.convert_examples_to_features(test_InputExamples, label_list, MAX_SEQ_LENGTH, tokenizer)
 
 # Compute # train and warmup steps from batch size
 num_train_steps = int(len(train_features) / BATCH_SIZE * NUM_TRAIN_EPOCHS)
@@ -62,7 +58,7 @@ train_input_fn = run_classifier.input_fn_builder(
     is_training=True,
     drop_remainder=False)
 
-print(f'Beginning Training!')
+print('Beginning Training!')
 current_time = datetime.now()
 estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)
 print("Training took time ", datetime.now() - current_time)
