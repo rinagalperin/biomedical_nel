@@ -65,8 +65,10 @@ For the given match we keep `1` as the label if the HRM UMLS matches with the an
 #### Utilizing BERT QA structure
 The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the _Training data construction_ section).
 
-#### Train/Test
-The process above results in 2821 examples which are split into train-test sets according to a 90%-10% division, respectively (2538 train examples, 283 test examples). 
+#### Output
+Final data output can be foud [here](training_data/output_data/training_data_4.json).
+
+The process results in 2821 examples which are split into train-test sets according to a 90%-10% division, respectively (2538 train examples, 283 test examples). 
 
 ## Results
 | n-gram  | Accuracy | Precision |  Recall | False negatives | False positives | True negatives | True positives |
