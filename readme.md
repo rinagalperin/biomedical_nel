@@ -2,7 +2,7 @@
 
 ## Goal
 Linking Hebrew terms to Unified Medical Language System (UMLs) entities can benefit text-analytics methods, make information retrieval and analysis 
-easier and more accurate. Our goal is to improve tagging results done by [MDTEL](https://github.com/yonatanbitton/mdtel)'s High Recall Matcher (HRM) using a contextual relevance model.
+easier and more accurate. This known problem is especially challenging in Hebrew since the language has different writing and sound systems compared to English. Our goal is to improve tagging results done by [MDTEL](https://github.com/yonatanbitton/mdtel)'s High Recall Matcher (HRM) using a Hebrew contextual relevance model.
 
 
 ## Our approach
@@ -36,13 +36,13 @@ the results of the tagged UMLS entities.
 
 For each entry in the data (post), we go over the matches found and do the following per-match:
 
-1) <u>word context</u><br>
+1) <u>**word context**</u><br>
 Using the offset of the term we find the original word from the text and create a window around it (depending on the chosen WINDOW_SIZE value) _to get the word context_ of the term (WINDOW_SIZE words to the left of the term and WINDOW_SIZE words to the right). 
 
-2) <u>UMLS from HRM</u><br>
+2) <u>**UMLS from HRM**</u><br>
 We collect the UMLS from the HRM output (under 'umls_match')
 
-3) <u>UMLS from manual annotations</u><br>
+3) <u>**UMLS from manual annotations**</u><br>
 We collect the term tagged in the mannual annotations that corresponds to the HRM match (using the offset) and look it up in the UMLS database to validate it's an actual UMLS (since in some cases it's not), so we take either the UMLS match or `Nan`.
 <br><br>
 _One-time runtime step: fix annotations data issues-_<br>
@@ -59,7 +59,7 @@ annotations' UMLS that has no corresponding CUI: קרסול הנפוח
 ```is recall matcher right: 0```<br>
 since in this case 'קרסול' is mapped to the drug Cresol (rather than the word 'ankle' or 'swollen ankle', as can be understood from the context).
 
-4) <u>Labels</u><br>
+4) <u>**Labels**</u><br>
 For the given match we keep `1` as the label if the HRM UMLS matches with the annotations' UMLS, and `0` otherwise. Notice that if the annotations' UMLS is `Nan` at this point, it means that the HRM UMLS does not fit either and therefore will use label `0` as expected.
 
 #### Utilizing BERT QA structure
@@ -93,3 +93,4 @@ Real answer: Wrong
 ## Acknowledgements
 + Yonatan Bitton's [MDTEL](https://github.com/yonatanbitton/mdtel) work.
 + [Google's Multilingual BERT](https://github.com/google-research/bert/blob/master/multilingual.md).
++ Thanks to the [Ministry of Science and Technology](https://www.gov.il/he/departments/ministry_of_science_and_technology) for supporting our work
