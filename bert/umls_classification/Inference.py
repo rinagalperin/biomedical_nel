@@ -6,7 +6,8 @@ from bert.utilty.utilty import model_fn_builder, create_tokenizer_from_hub_modul
 
 
 def get_prediction(in_sentences):
-    labels = ["Negative", "Positive"]
+    # labels = ["Negative", "Positive"]
+    labels = [0, 1]
     input_examples = [run_classifier.InputExample(guid="", text_a=x[0], text_b=x[1], label=0) for x in
                       in_sentences]  # here, "" is just a dummy label
     input_features = run_classifier.convert_examples_to_features(input_examples, label_list, MAX_SEQ_LENGTH, tokenizer)
@@ -32,5 +33,11 @@ _, test = ContextualRelevance(data_flie_path).get_data()
 data = list(zip(test[DATA_COLUMN].to_list(), test[ANSWER_COLUMN].to_list()))
 
 predictions = get_prediction(data)
+for i, p in enumerate(predictions):
+    print('sentence: ', p[0][0])
+    print('HRM match:',  p[0][1])
+    print('UMLS classifier answer:', 'Right' if p[2] else 'Wrong')
+    real_answer = p[2] == test['Labels'][i]
+    print('Real answer:', real_answer, 'the answer is:', test['Annotations_UMLS'][i])
+    print()
 
-print(predictions)

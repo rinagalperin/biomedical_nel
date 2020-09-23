@@ -1,12 +1,12 @@
 DATA_COLUMN = 'windows'
 ANSWER_COLUMN = 'HRM_UMLS'
 LABEL_COLUMN = 'Labels'
-data_flie_path = '../../training_data/output_data/training_data_4.json'
+WINDOW_SIZE = 2
+data_flie_path = '../../training_data/output_data/training_data_{}.json'.format(WINDOW_SIZE)
 # label_list is the list of labels, i.e. True, False or 0, 1 or 'dog', 'cat'
 label_list = [0, 1]
-
-OUTPUT_DIR = '../output_model'  # @param {type:"string"}
-checkpoint_path = '../output_model/model.ckpt-237'
+OUTPUT_DIR = '../output_model_{}'.format(WINDOW_SIZE)  # @param {type:"string"}
+checkpoint_path = '../output_model_{}/model.ckpt-237'.format(WINDOW_SIZE)
 BERT_MODEL_HUB = "https://tfhub.dev/google/bert_multi_cased_L-12_H-768_A-12/1"
 
 BATCH_SIZE = 32

@@ -60,7 +60,7 @@ def get_windows_and_labels_from_data(hrm_df_data, umls_data, annotations_data, w
             if tokenized_txt in list(posts_dict.keys()) and original_offset in list(posts_dict[tokenized_txt].keys()):
                 # since there is a gap between the terms from the HRM and the ones from the annotations data,
                 # we use the offset to find the specific match from the annotations data and then collect the
-                # corresponding CUI
+                # corresponding UMLS
                 umls2, post_num, annotation_id = posts_dict[tokenized_txt][original_offset]
 
                 # annotations_cui = get_cui_from_word(umls2, umls_data)
@@ -192,7 +192,7 @@ def main():
     umls_data = pd.read_csv(umls_df_data_path)
     annotations_data = read_annotations_data(annotations_data_path)
 
-    window_size = 4
+    window_size = 2
     #print(get_cui_from_word('חיסון שפעת חזירים', umls_data))
     windows, umls, annotations_umls, labels = get_windows_and_labels_from_data(high_recall_matcher_output,
                                                                        umls_data,

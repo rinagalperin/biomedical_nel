@@ -6,6 +6,7 @@ from bert.bert_code import tokenization, optimization
 # This is a path to an uncased (all lowercase) version of BERT
 
 
+
 def create_tokenizer_from_hub_module(bert_model_hub, do_lower=True):
     """Get the vocab file and casing info from the Hub module."""
     with tf.Graph().as_default():
@@ -75,6 +76,8 @@ def create_model(is_predicting, input_ids, input_mask, segment_ids, labels,
 
 # model_fn_builder actually creates our model function
 # using the passed parameters for num_labels, learning_rate, etc.
+
+
 def model_fn_builder(num_labels, learning_rate, num_train_steps,
                      num_warmup_steps, bert_model_hub):
     """Returns `model_fn` closure for TPUEstimator."""
@@ -94,37 +97,20 @@ def model_fn_builder(num_labels, learning_rate, num_train_steps,
 
             (loss, predicted_labels, log_probs) = create_model(
                 is_predicting, input_ids, input_mask, segment_ids, label_ids, num_labels, bert_model_hub)
-
             train_op = optimization.create_optimizer(
                 loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu=False)
 
             # Calculate evaluation metrics.
             def metric_fn(label_ids, predicted_labels):
                 accuracy = tf.compat.v1.metrics.accuracy(label_ids, predicted_labels)
-                # f1_score = tf.compat.v1.contrib.metrics.f1_score(
-                #     label_ids,
-                #     predicted_labels)
-                auc = tf.compat.v1.metrics.auc(
-                    label_ids,
-                    predicted_labels)
-                recall = tf.compat.v1.metrics.recall(
-                    label_ids,
-                    predicted_labels)
-                precision = tf.compat.v1.metrics.precision(
-                    label_ids,
-                    predicted_labels)
-                true_pos = tf.compat.v1.metrics.true_positives(
-                    label_ids,
-                    predicted_labels)
-                true_neg = tf.compat.v1.metrics.true_negatives(
-                    label_ids,
-                    predicted_labels)
-                false_pos = tf.compat.v1.metrics.false_positives(
-                    label_ids,
-                    predicted_labels)
-                false_neg = tf.compat.v1.metrics.false_negatives(
-                    label_ids,
-                    predicted_labels)
+                # f1_score = tf.compat.v1.contrib.metrics.f1_score(label_ids, predicted_labels)
+                auc = tf.compat.v1.metrics.auc(label_ids, predicted_labels)
+                recall = tf.compat.v1.metrics.recall(label_ids, predicted_labels)
+                precision = tf.compat.v1.metrics.precision(label_ids, predicted_labels)
+                true_pos = tf.compat.v1.metrics.true_positives(label_ids, predicted_labels)
+                true_neg = tf.compat.v1.metrics.true_negatives(label_ids, predicted_labels)
+                false_pos = tf.compat.v1.metrics.false_positives(label_ids, predicted_labels)
+                false_neg = tf.compat.v1.metrics.false_negatives(label_ids, predicted_labels)
                 return {
                     "eval_accuracy": accuracy,
                     # "f1_score": f1_score,

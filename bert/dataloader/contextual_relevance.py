@@ -28,10 +28,10 @@ class ContextualRelevance:
         return self.train, self.test
 
 #
-# dataloder = ContextualRelevance('../../training_data/output_data/training_data_4.json')
-# train, test = dataloder.get_data()
+#dataloder = ContextualRelevance('../../training_data/output_data/training_data_4.json')
+#train, test = dataloder.get_data()
 #
 # print(np.sum(train['Labels']))
 # print(test)
-# print(test['Annotations_UMLS'].tolist())
-# print(len(train['Annotations_UMLS'].tolist()))
+#print(test['Annotations_UMLS'].tolist())
+#print(len(train['Annotations_UMLS'].tolist()))
