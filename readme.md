@@ -34,7 +34,7 @@ Using N-grams for context analysis, i.e.- combinations of one or more words that
 We use the output from HRM and the manual annotations, which can be found [here](https://drive.google.com/file/d/17JTxutH15P3R-Wd4x3d5ulY22KW0vVUC/view?usp=sharing) and attempt to use a contextual relevance language model to improve
 the results of the tagged UMLS entities.
 
-For each entry in the data (post), we go over the matches found and do the following:
+For each entry in the data (post), we go over the matches found and do the following per-match:
 
 1) <u>n-grams</u><br>
 Using the offset of the term we find the original word from the text and create a window around it (depending on the chosen n-gram value) _to get the word context_ of the term (n words to the left of the term and n words to the right). 
@@ -46,9 +46,23 @@ We collect the UMLS from the HRM output (under 'umls_match')
 We collect the term tagged in the mannual annotations that corresponds to the HRM match (using the offset) and look it up in the UMLS database to validate it's an actual UMLS (since in some cases it's not), so we take either the UMLS match or `Nan`.
 <br><br>
 _One-time runtime step: fix annotations data issues-_<br>
-If there is no UMLS for the annotations' match, then we want to either insert the HRM UMLS instead or leave it as `Nan`. This is done during run time using a manual user-input method, where the user decides based on the context-window if the HRM's UMLS matches (`1` or `0` input). This process was done once and then we saved the fixed file separately (can be found [here](training_data/output_data/corrected_annotations.json)) and used it instead of the original manual annotations file. The process' [code](training_data/main.py) is commented out but can be repeated if necessary.
+If there is no UMLS for the annotations' match, then we want to either insert the HRM UMLS instead or leave it as `Nan`. This is done during run time using a manual user-input method, where the user decides based on the context-window if the HRM's UMLS matches (`1` or `0` input). This process was done once and then we saved the fixed file separately (can be found [here](training_data/output_data/corrected_annotations.json)) and used it instead of the original manual annotations file. The process' [code](training_data/main.py) is commented out but can be repeated if necessary.<br><br>**For example**:<br> given the window:<br>
+`
+אם יש קשר בין הקרסול הנפוח לשאר אנא עזרתכם
+`<br>
+```
+hrm_cui: C0174883, קרסול
+```
+```
+annotations' UMLS that has no corresponding CUI: קרסול הנפוח
+```
+```is recall matcher right: 0```<br>
+since in this case 'קרסול' is mapped to the drug Cresol (rather than the word 'ankle', as can be understood from the context: 'הקרסול הנפוח').
 
-#### Utilizing BERT QA model
+4) <u>Labels</u><br>
+For the given match we add `1` if the HRM UMLS matches with the annotations' UMLS, and `0` otherwise. Notice that if the annotations' UMLS is `Nan` at this point, it means that the HRM UMLS does not fit either and therefore will return `0` as expected.
+
+#### Utilizing BERT QA structure
 The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = `1` if the HRM UMLS matches with the annotations' UMLS, and `0` otherwise).
 
 ## Results
