@@ -76,13 +76,13 @@ The process above results in 2821 examples which are split into train-test sets 
 |    5    |     -    |     -     |    -    |        -        |        -        |        -       |        -       |
 
 #### Example:<br>
-based on the context of the sentece, 'חולים' is not a medical term but part of a named location: 'קופות החולים'. The HRM's mistake is fixed by our contextual relevance model:
+based on the context of the sentece, 'חולים' is not a medical term but part of a named location: 'קופות החולים'. The HRM's mistake is caught by the contextual relevance model:
 <br>
 ```
 sentence:  המשלימים של קופות החולים המחיר גבוה יותר
 HRM match: חולים
-UMLS classifier answer: 0
-Real answer: 0
+UMLS classifier answer: Wrong
+Real answer: Wrong
 ```
 
 
