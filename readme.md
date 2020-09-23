@@ -75,6 +75,17 @@ The process above results in 2821 examples which are split into train-test sets 
 |    4    |  85.866% |    87%    | 84.615% |        22       |        18       |       122      |       121      |
 |    5    |     -    |     -     |    -    |        -        |        -        |        -       |        -       |
 
+#### Example:<br>
+based on the context of the sentece, 'חולים' is not a medical term but part of a named location: 'קופות החולים'. The HRM's mistake is fixed by our contextual relevance model:
+<br>
+```
+sentence:  המשלימים של קופות החולים המחיר גבוה יותר
+HRM match: חולים
+UMLS classifier answer: 0
+Real answer: 0
+```
+
+
 ## Acknowledgements
 + Yonatan Bitton's [MDTEL](https://github.com/yonatanbitton/mdtel) work.
 + [Google's Multilingual BERT](https://github.com/google-research/bert/blob/master/multilingual.md).
