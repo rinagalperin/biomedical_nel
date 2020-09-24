@@ -15,9 +15,8 @@ Observation of the HRM output shows that in many cases it chooses candidate term
 
 given the post:
 
-`
-ברוכים הבאים לפורום דיכאון וחרדה  כאן תוכלו לשאול  להתייעץ וגם לייעץ בנושאי חרדה ודיכאון  עצב ותחושות נפשיות  מטרת הפורום בין היתר היא לסייע לחולים כרוניים באתר כמוני הנמצאים במצבי דיכאון וחרדה כתוצאה מהמצב הרפואי בו הם נתונים  ובעיקר שיהיה לבריאות מערכת כמוני
-`
+>ברוכים הבאים לפורום דיכאון וחרדה  כאן תוכלו לשאול  להתייעץ וגם לייעץ בנושאי חרדה ודיכאון  עצב ותחושות נפשיות  מטרת הפורום בין היתר היא לסייע לחולים כרוניים באתר כמוני הנמצאים במצבי דיכאון וחרדה כתוצאה מהמצב הרפואי בו הם נתונים  ובעיקר שיהיה לבריאות מערכת כמוני
+
 
 the HRM output contains the following match:
 ```
@@ -46,12 +45,12 @@ We collect the UMLS from the HRM output (under 'umls_match')
 We collect the term tagged in the mannual annotations that corresponds to the HRM match (using the offset) and look it up in the UMLS database to validate it's an actual UMLS (since in some cases it's not), so we take either the UMLS match or `Nan`.
 <br><br>
 _One-time runtime step: fix annotations data issues-_<br>
-If there is no UMLS for the annotations' match, then we want to either insert the HRM UMLS instead or leave it as `Nan`. This is done during run time using a manual user-input method, where the user decides based on the context-window if the HRM's UMLS matches (`1` or `0` input). This process was done once and then we saved the fixed file separately (can be found [here](training_data/output_data/corrected_annotations.json)) and used it instead of the original manual annotations file. The process' [code](training_data/main.py) is commented out but can be repeated if necessary.<br><br>**For example**:<br> given the window:<br>
-`
-אם יש קשר בין הקרסול הנפוח לשאר אנא עזרתכם
-`<br>```hrm_cui: C0174883, קרסול```<br>
-```annotations' UMLS that has no corresponding CUI:קרסול הנפוח```<br>```is recall matcher right: 0```<br>
-since in this case 'קרסול' is mapped to the drug Cresol (rather than the term 'ankle' or 'swollen ankle', as can be understood from the context).
+If there is no UMLS for the annotations' match, then we want to either insert the HRM UMLS instead or leave it as `Nan`. This is done during run time using a manual user-input method, where the user decides based on the context-window if the HRM's UMLS matches (`1` or `0` input). This process was done once and then we saved the fixed file separately (can be found [here](training_data/output_data/corrected_annotations.json)) and used it instead of the original manual annotations file. The process' [code](training_data/main.py) is commented out but can be repeated if necessary.<br><br>**For example**:<br> given the window:
+>אם יש קשר בין הקרסול הנפוח לשאר אנא עזרתכם
+
+&nbsp;&nbsp;&nbsp;```hrm_cui: C0174883, קרסול```<br>
+&nbsp;&nbsp;&nbsp;```annotations' UMLS that has no corresponding CUI: קרסול הנפוח```<br>&nbsp;&nbsp;&nbsp;```is recall matcher right: 0```<br>
+&nbsp;&nbsp;&nbsp;since in this case 'קרסול' is mapped to the drug Cresol (rather than the term 'ankle' or 'swollen ankle', as can be understood from the context).
 
 4) <u>**Labels**</u><br>
 For the given match we keep `1` as the label if the HRM UMLS matches with the annotations' UMLS, and `0` otherwise. Notice that if the annotations' UMLS is `Nan` at this point, it means that the HRM UMLS does not fit either and therefore will use label `0` as expected.
