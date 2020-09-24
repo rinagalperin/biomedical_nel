@@ -25,9 +25,9 @@ the HRM output contains the following match:
 
 the candidate match 'מוני' is mapped to UMLS 'Monit' which is a drug for chest pains. It was extracted from the word 'כ**מוני**' which is the name of the online forum.
 
-Intuitively, using the context of the word in the post can give better indication of whether or not it is an actual medical term or not. In the above case, 'מערכת כמוני' can imply that 'כמוני' is a type/name of a system and not a drug.
+Intuitively, using the context of the word in the post can give better indication of whether or not it is an actual medical term. In the above case, 'מערכת כמוני' can imply that 'כמוני' is a type/name of a system and not a drug.
 
-We use context analysis, i.e.- combinations of one or more words that represent entities, phrases, concepts, and themes that appear in the text. The exact process we chose is described in the _Training data construction_ section.
+We use context analysis, i.e.- combinations of one or more words that represent entities, phrases, concepts, and themes that appear in the text. The exact process we implemented is described in the _Training data construction_ section.
 
 ## Training data construction
 We use the output from HRM and the manual annotations, which can be found [here](https://drive.google.com/file/d/17JTxutH15P3R-Wd4x3d5ulY22KW0vVUC/view?usp=sharing) and attempt to use a contextual relevance language model to improve
@@ -53,7 +53,7 @@ If there is no UMLS for the annotations' match, then we want to either insert th
 &nbsp;&nbsp;&nbsp;since in this case 'קרסול' is mapped to the drug Cresol (rather than the term 'ankle' or 'swollen ankle', as can be understood from the context).
 
 4) <u>**Labels**</u><br>
-For the given match we keep `1` as the label if the HRM UMLS matches with the annotations' UMLS, and `0` otherwise. Notice that if the annotations' UMLS is `Nan` at this point, it means that the HRM UMLS does not fit either and therefore will use label `0` as expected.
+For the given match we keep `1` as the label if the HRM UMLS matches with the annotations' UMLS, and `0` otherwise. Notice that if the annotations' UMLS is `Nan` at this point, it means that the HRM UMLS does not fit either and therefore we get label `0` as expected.
 
 #### Utilizing BERT QA structure
 The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the _Training data construction_ section).
