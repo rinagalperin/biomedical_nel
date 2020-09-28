@@ -55,7 +55,7 @@ Observation of the HRM output reveals 3 main problems:
 
  where the closest UMLS with documented CUI is 'חולה'.
 
- >אנסה להסביר בצורה פשוטה ה**חומצה אלפא לינולנית** ALA עוברת בגוף היונקים
+ >אנסה להסביר בצורה פשוטה ה**חומצה אלפא לינולנית** עוברת בגוף היונקים
 
  where the closest UMLS with documented CUI is 'חומצה'.
 
@@ -66,6 +66,7 @@ Overall we went over about 200 posts from the three communities (diabetes, scler
 Addressing these problems can result in higher recall and better generalization.
 
 ### Solution
+#### problems 1, 2
 Intuitively, using the context of the word in the post can give better indication of whether or not it is an actual medical term or not, which addresses the first 2 problems:
 
 1. 'מערכת כמוני' can imply that 'כמוני' is a type/name of a system and not a drug.
@@ -82,10 +83,10 @@ see the following guideline provided to the annotators as reference:
 מרפאת סכרת<br><br>
 There isn't a disorder mention in this text. Diabetes is a disorder in the UMLS, but in this context it isn't meant as disease. Nobody suffers from the disease in this context. 
 
-<br><br>
+#### problem 3
  The 3rd problem however, is an inherent limitation of the HRM as it can't choose terms which have no corresponding CUI in the UMLS database and therefore a modification of the HRM logic itself is required:
 
-3. An important observation is that in the Hebrew language, adding more information to nouns (making them more specific) is done by adding more words to the general term using preposition, for example:
+An important observation is that in the Hebrew language, adding more information to nouns (making them more specific) is done by adding more words to the general term using preposition, for example:
 >'חיסון לשפעת'
 
  >'קליניקה לטיפול בסכרת'
@@ -111,7 +112,7 @@ We collect the UMLS from the HRM output (under 'umls_match')
 We collect the term tagged in the manual annotations that corresponds to the HRM match (using the offset)  or `Nan` if there isn't one.
 
 4) <u>**Labels**</u><br>
-For the given match we keep `1` as the label if either the HRM UMLS (including the non-CUI terms that we synthetically added as described [here in step 3](###Solution)) matches with the annotations' UMLS or if the HRM candidate match (under 'cand_match') matches with the annotations' UMLS, and `0` otherwise. 
+For the given match we keep `1` as the label if either the HRM UMLS (including the non-CUI terms that we synthetically added as described [here in step 3](#problem_3)) matches with the annotations' UMLS or if the HRM candidate match (under 'cand_match') matches with the annotations' UMLS, and `0` otherwise. 
   
  Comparing the HRM candidate match with the annotations' UMLS mitigates small irrelevant deviations: since the annotations' UMLS use the exact syntax from the text, if the HRM found a CUI match with the candidate that is identical to the annotations' UMLS - then that CUI must in turn fit the annotations' UMLS as well. 
 In this comparison we allow a difference in at most the first character for any one of each expression's words, considering term-pairs to be identical in cases such as the following:
