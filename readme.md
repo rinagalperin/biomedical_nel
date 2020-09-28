@@ -76,7 +76,7 @@ Intuitively, using the context of the word in the post can give better indicatio
 
 2. 'קהילת טרשת נפוצה' can imply that in the given context, 'טרשת נפוצה' is a type/name of an online community and not a disorder.
 
-We use context analysis, i.e.- combinations of one or more words that represent entities, phrases, concepts, and themes that appear in the text. The exact process we implemented is described [here](#Process).
+We use context analysis, i.e.- combinations of one or more words that represent entities, phrases, concepts, and themes that appear in the text. The exact process we implemented is described [here](#Data-construction).
 
 Since such cases are not labeled as UMLS in the manual annotations, using the comparison between the HRM output and the annotations as the label provides the desired information to our BERT model during training (meaning that if the HRM _does tag such expressions_ - it is rightfully considered a mistake).
 
@@ -138,14 +138,15 @@ Final data output can be found [here](training_data/output_data/training_data_4.
 Instead of splitting the output of the [data construction process](#Data-construction) into training/testing sets, we split the HRM output into such sets (90% training, 10% testing) and then perform the data construction on each set. This helps avoid overfitting.
 
 ### Utilizing BERT QA structure
-The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the [Training data construction](#Data-construction) section).
+The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the [data construction process](#Data-construction) section).
 
 ## :bar_chart: Results
 The HRM's accuracy was **44.17%**.<br>
-The following table summarizes our results on the test set:
+The following table summarizes our results on the test set for different versions of our model:
 
 (*) note that 'WINDOW_SIZE' represents the chosen number of words from each side (left and right) to the term.
 
+### Baseline - BERT model without HRM expansion
 | WINDOW_SIZE | Accuracy | Precision |  Recall | False negatives | False positives | True negatives | True positives |
 |:-----------:|:--------:|:---------:|:-------:|:---------------:|:---------------:|:--------------:|:--------------:|
 |      2      |  87.986% |  84.733%  |  88.8%  |        14       |        20       |       138      |       111      |
@@ -153,7 +154,7 @@ The following table summarizes our results on the test set:
 |      4      |  85.866% |    87%    | 84.615% |        22       |        18       |       122      |       121      |
 
 
-#### Example:<br>
+#### Inference example:<br>
 based on the context of the sentence, 'חולים' is not a medical term but part of a named location: 'קופות החולים'. The HRM's mistake is caught by the contextual relevance model:
 
 >המשלימים של קופות החולים המחיר גבוה יותר
@@ -164,9 +165,28 @@ UMLS classifier answer: Wrong
 Real answer: Wrong
 ```
 
+### BERT model with HRM expansion
+| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |
+|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|
+|      2      |   93.5%  |   86.8%   |   79%  |        21       |        12       |       395      |       79       |
+|      3      |     -    |     -     |    -   |        -        |        -        |        -       |        -       |
+|      4      |     -    |     -     |    -   |        -        |        -        |        -       |        -       |
+
+#### Inference example:<br>
+'סוכר בדם' is a medical term tagged by the manual annotators but originally not tagged by the HRM. After synthetically adding more matches to the HRM, this term is now correctly identified by our model:
+
+>את רמת הסוכר בדם מסקנה לנסות
+
+```
+HRM match: הסוכר בדם
+UMLS classifier answer: Right
+Real answer: Right
+```
+
 ## :hammer: TODO 
 
 - [x] modify HRM to accept medical terms which have no corresponding CUI
+- [ ] Filter HRM expansion using MI or Google results count  
 - [ ] Fine-tune model's hyper parameters.
 - [ ] Train for 2 other communities: Depression and Sclerosis.
 
