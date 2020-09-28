@@ -1,16 +1,16 @@
 # Hebrew Contextual Relevance Model For UMLS Entity Linking Using BERT
 
-## Goal
+## :dart: Goal
 Linking Hebrew terms to Unified Medical Language System (UMLs) entities can benefit text-analytics methods, make information retrieval and analysis 
 easier and more accurate. This known problem is especially challenging in Hebrew since the language has different writing and sound systems compared to English. Our goal is to improve tagging results done by [MDTEL](https://github.com/yonatanbitton/mdtel)'s High Recall Matcher (HRM) using a Hebrew contextual relevance model and utilizing the [manual annotations](https://drive.google.com/file/d/17JTxutH15P3R-Wd4x3d5ulY22KW0vVUC/view?usp=sharing).
 
 
-## Our approach
+## :game_die: Our approach
 We utilize **BERT** (Bidirectional Encoder Representations from Transformers), a technique for natural language processing (NLP) pre-training developed by Google.
 Its key technical innovation is applying the bidirectional training of Transformer, a popular attention model, to language modelling.
 This is in contrast to previous efforts which looked at a text sequence either from left to right or combined left-to-right and right-to-left training.
 
-## Hypothesis
+## :bulb: Hypothesis
 ### Problem identification
 Observation of the HRM output reveals 3 main problems:
 
@@ -99,7 +99,7 @@ An important observation is that in the Hebrew language, adding more information
  This means that considering the given term tagged by the HRM combined with one or two of the words following it - can provide the necessary medical terms that lack a CUI. 
 
 
-## Training data construction
+## :construction: Training data construction
 We use the output from HRM and the manual annotations, which can be found [here](https://drive.google.com/file/d/17JTxutH15P3R-Wd4x3d5ulY22KW0vVUC/view?usp=sharing) and attempt to use a contextual relevance language model to improve
 the results of the tagged UMLS entities.
 
@@ -137,7 +137,7 @@ Final data output can be found [here](training_data/output_data/training_data_4.
 
 The process results in 2821 examples which are split into train-test sets according to a 90%-10% division, respectively (2538 train examples, 283 test examples). 
 
-## Results
+## :bar_chart: Results
 The HRM's accuracy was **44.17%**.<br>
 The following table summarizes our results on the test set:
 
