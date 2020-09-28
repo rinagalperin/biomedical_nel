@@ -183,6 +183,22 @@ UMLS classifier answer: Right
 Real answer: Right
 ```
 
+we also tested the model's answe to a novel sentence to see if it can generelize well so that new medical terms are not ignored:
+>האם קיים חיסון לקורנה שיכול לעזור לי
+
+```
+HRM match: חיסון לקורונה
+UMLS classifier answer: Right
+```
+
+when testing the same sentence but with a less precise HRM match ('חיסון' as oppose to 'חיסון לקורונה'), the model rightfully tags it as wrong:
+>האם קיים חיסון לקורנה שיכול לעזור לי
+
+```
+HRM match: חיסון
+UMLS classifier answer: Wrong
+```
+
 ## :hammer: TODO 
 
 - [x] modify HRM to accept medical terms which have no corresponding CUI
