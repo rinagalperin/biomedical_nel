@@ -161,17 +161,17 @@ UMLS classifier answer: Wrong
 Real answer: Wrong
 ```
 
-## TODO 
+## :hammer: TODO 
 
 - [x] modify HRM to accept medical terms which have no corresponding CUI
 - [ ] Fine-tune model's hyper parameters.
 - [ ] Train for 2 other communities: Depression and Sclerosis.
 
 
-## Acknowledgements
+## :high_brightness: Acknowledgements
 + Yonatan Bitton's [MDTEL](https://github.com/yonatanbitton/mdtel) work.
 + [Google's Multilingual BERT](https://github.com/google-research/bert/blob/master/multilingual.md).
 + Thanks to the [Ministry of Science and Technology](https://www.gov.il/he/departments/ministry_of_science_and_technology) for supporting our work
 
-## Contact
-:speech_balloon: rinag@post.bgu.ac.il
+## :email: Contact
+rinag@post.bgu.ac.il
