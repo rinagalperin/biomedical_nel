@@ -73,7 +73,7 @@ Intuitively, using the context of the word in the post can give better indicatio
 
 2. 'קהילת טרשת נפוצה' can imply that in the given context, 'טרשת נפוצה' is a type/name of an online community and not a disorder.
 
-We use context analysis, i.e.- combinations of one or more words that represent entities, phrases, concepts, and themes that appear in the text. The exact process we implemented is described in the _Training data construction_ section.
+We use context analysis, i.e.- combinations of one or more words that represent entities, phrases, concepts, and themes that appear in the text. The exact process we implemented is described [here](#Training-data-construction).
 
 Since such cases are not labeled as UMLS in the manual annotations, using the comparison between the HRM output and the annotations as the label provides the desired information to our BERT model during training (meaning that if the HRM _does tag such expressions_ - it is rightfully considered a mistake).
 
