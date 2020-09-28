@@ -38,6 +38,6 @@ for i, p in enumerate(predictions):
     print('HRM match:',  p[0][1])
     print('UMLS classifier answer:', 'Right' if p[2] else 'Wrong')
     real_answer = p[2] == test['Labels'][i]
-    print('Real answer:', real_answer, 'the answer is:', test['Annotations_UMLS'][i])
+    print('classifier success:', real_answer, 'the answer is:', test['Annotations_UMLS'][i])
     print()
 

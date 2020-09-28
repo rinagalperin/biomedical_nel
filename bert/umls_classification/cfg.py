@@ -6,7 +6,7 @@ data_flie_path = '../../training_data/output_data/training_data_{}.json'.format(
 # label_list is the list of labels, i.e. True, False or 0, 1 or 'dog', 'cat'
 label_list = [0, 1]
 OUTPUT_DIR = '../output_model_{}'.format(WINDOW_SIZE)  # @param {type:"string"}
-checkpoint_path = '../output_model_{}/model.ckpt-237'.format(WINDOW_SIZE)
+checkpoint_path = '../output_model_{}/model.ckpt-745'.format(WINDOW_SIZE)
 BERT_MODEL_HUB = "https://tfhub.dev/google/bert_multi_cased_L-12_H-768_A-12/1"
 
 BATCH_SIZE = 32
