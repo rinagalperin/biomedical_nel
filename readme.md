@@ -146,7 +146,7 @@ The following table summarizes our results on the test set for different version
 
 (*) note that 'WINDOW_SIZE' represents the chosen number of words from each side (left and right) to the term.
 
-### Baseline - BERT model without HRM expansion
+### Baseline BERT (no HRM expansion)
 | WINDOW_SIZE | Accuracy | Precision |  Recall | False negatives | False positives | True negatives | True positives |
 |:-----------:|:--------:|:---------:|:-------:|:---------------:|:---------------:|:--------------:|:--------------:|
 |      2      |  87.986% |  84.733%  |  88.8%  |        14       |        20       |       138      |       111      |
@@ -165,7 +165,7 @@ UMLS classifier answer: Wrong
 Real answer: Wrong
 ```
 
-### BERT model with HRM expansion
+### BERT model w/ HRM expansion
 | WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |
 |:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|
 |      2      |   93.5%  |   86.8%   |   79%  |        21       |        12       |       395      |       79       |
