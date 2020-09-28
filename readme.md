@@ -112,7 +112,7 @@ We collect the UMLS from the HRM output (under 'umls_match')
 We collect the term tagged in the manual annotations that corresponds to the HRM match (using the offset)  or `Nan` if there isn't one.
 
 4) <u>**Labels**</u><br>
-For the given match we keep `1` as the label if either the HRM UMLS (including the non-CUI terms that we synthetically added as described [here in step 3](#problem-3)) matches with the annotations' UMLS or if the HRM candidate match (under 'cand_match') matches with the annotations' UMLS, and `0` otherwise. 
+For the given match we keep `1` as the label if either the HRM UMLS (including the non-CUI terms that we synthetically added as described [here](#problem-3)) matches with the annotations' UMLS or if the HRM candidate match (under 'cand_match') matches with the annotations' UMLS, and `0` otherwise. 
   
  Comparing the HRM candidate match with the annotations' UMLS mitigates small irrelevant deviations: since the annotations' UMLS use the exact syntax from the text, if the HRM found a CUI match with the candidate that is identical to the annotations' UMLS - then that CUI must in turn fit the annotations' UMLS as well. 
 In this comparison we allow a difference in at most the first character for any one of each expression's words, considering term-pairs to be identical in cases such as the following:
