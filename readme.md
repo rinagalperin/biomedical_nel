@@ -69,14 +69,14 @@ Overall we went over about 200 posts from the three communities (diabetes, scler
 Addressing these problems can result in higher recall and better generalization.
 
 ### Solution
-#### problems 1, 2
+#### Problems 1, 2
 Intuitively, using the context of the word in the post can give better indication of whether or not it is an actual medical term or not, which addresses the first 2 problems:
 
 1. 'מערכת כמוני' can imply that 'כמוני' is a type/name of a system and not a drug.
 
 2. 'קהילת טרשת נפוצה' can imply that in the given context, 'טרשת נפוצה' is a type/name of an online community and not a disorder.
 
-We use context analysis, i.e.- combinations of one or more words that represent entities, phrases, concepts, and themes that appear in the text. The exact process we implemented is described [here](#%F0%9F%9A%A7-Training-data-construction).
+We use context analysis, i.e.- combinations of one or more words that represent entities, phrases, concepts, and themes that appear in the text. The exact process we implemented is described [here](#Process).
 
 Since such cases are not labeled as UMLS in the manual annotations, using the comparison between the HRM output and the annotations as the label provides the desired information to our BERT model during training (meaning that if the HRM _does tag such expressions_ - it is rightfully considered a mistake).
 
@@ -86,7 +86,7 @@ see the following guideline provided to the annotators as reference:
 מרפאת סכרת<br><br>
 There isn't a disorder mention in this text. Diabetes is a disorder in the UMLS, but in this context it isn't meant as disease. Nobody suffers from the disease in this context. 
 
-#### problem 3
+#### Problem 3
  The 3rd problem however, is an inherent limitation of the HRM as it can't choose terms which have no corresponding CUI in the UMLS database and therefore a modification of the HRM logic itself is required:
 
 An important observation is that in the Hebrew language, adding more information to nouns (making them more specific) is done by adding more words to the general term using preposition, for example:
@@ -99,7 +99,8 @@ An important observation is that in the Hebrew language, adding more information
  This means that considering the given term tagged by the HRM combined with one or two of the words following it - can provide the necessary medical terms that lack a CUI. 
 
 
-## :construction: Training data construction
+## :construction: Training
+### Data construction
 We use the output from HRM and the manual annotations, which can be found [here](https://drive.google.com/file/d/17JTxutH15P3R-Wd4x3d5ulY22KW0vVUC/view?usp=sharing) and attempt to use a contextual relevance language model to improve
 the results of the tagged UMLS entities.
 
@@ -115,7 +116,7 @@ We collect the UMLS from the HRM output (under 'umls_match')
 We collect the term tagged in the manual annotations that corresponds to the HRM match (using the offset)  or `Nan` if there isn't one.
 
 4) <u>**Labels**</u><br>
-For the given match we keep `1` as the label if either the HRM UMLS (including the non-CUI terms that we synthetically added as described [here](#problem-3)) matches with the annotations' UMLS or if the HRM candidate match (under 'cand_match') matches with the annotations' UMLS, and `0` otherwise. 
+For the given match we keep `1` as the label if either the HRM UMLS (including the non-CUI terms that we synthetically added as described [here](#Problem-3)) matches with the annotations' UMLS or if the HRM candidate match (under 'cand_match') matches with the annotations' UMLS, and `0` otherwise. 
   
  Comparing the HRM candidate match with the annotations' UMLS mitigates small irrelevant deviations: since the annotations' UMLS use the exact syntax from the text, if the HRM found a CUI match with the candidate that is identical to the annotations' UMLS - then that CUI must in turn fit the annotations' UMLS as well. 
 In this comparison we allow a difference in at most the first character for any one of each expression's words, considering term-pairs to be identical in cases such as the following:
@@ -129,13 +130,15 @@ In this comparison we allow a difference in at most the first character for any 
 
  this step filtered **over 50%** of mismatches!
 
-#### Utilizing BERT QA structure
-The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the [Training data construction](#-Training-data-construction) section).
-
-#### Output
+### Output
 Final data output can be found [here](training_data/output_data/training_data_4.json) (different outputs are created depending on the chosen window size).
 
-The process results in 2821 examples which are split into train-test sets according to a 90%-10% division, respectively (2538 train examples, 283 test examples). 
+## :microscope: Testing
+### Data
+Instead of splitting the output of the [data construction process](#Data-construction) into training/testing sets, we split the HRM output into such sets (90% training, 10% testing) and then perform the data construction on each set. This helps avoid overfitting.
+
+### Utilizing BERT QA structure
+The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the [Training data construction](#Data-construction) section).
 
 ## :bar_chart: Results
 The HRM's accuracy was **44.17%**.<br>
