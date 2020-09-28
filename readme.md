@@ -59,7 +59,7 @@ Observation of the HRM output reveals 3 main problems:
 
  where the closest UMLS with documented CUI is 'חומצה'.
 
- Since the annotators are medical professionals with years of theoretical and practical knowledge, we treat their annotations as the ground-truth, even if the terms have no corresponding CUI in the UMLS database. Moreover, the medical field is constantly changing and therefore we would like our model to have good generalization ability in order to be able to identify new terms, such as '2019 coronavirus vaccination', which didn't exist when the manual annotations where made.
+ Since the annotators are medical professionals with years of theoretical and practical knowledge, we treat their annotations as the ground-truth, even if the terms have no corresponding CUI in the UMLS database. Moreover, the medical field is constantly changing and therefore we would like our model to have good generalization ability in order to be able to identify new terms, such as '2019 coronavirus vaccination', which didn't exist when the manual annotations were made.
 
 Overall we went over about 200 posts from the three communities (diabetes, sclerosis, depression) and their corresponding HRM tags and found that these problems occur quite often (about 20% of the posts were related to one or more of the above tagging mistakes). 
 
@@ -74,7 +74,7 @@ Intuitively, using the context of the word in the post can give better indicatio
 
 We use context analysis, i.e.- combinations of one or more words that represent entities, phrases, concepts, and themes that appear in the text. The exact process we implemented is described in the _Training data construction_ section.
 
-Since in the manual annotations such cases are not labeled as UMLS, using them as the label provides the desired information to the model during training (meaning that if the HRM _does tag them_ - it is rightfully considered a mistake).
+Since such cases are not labeled as UMLS in the manual annotations, using the comparison between the HRM output and the annotations as the label provides the desired information to our BERT model during training (meaning that if the HRM _does tag such expressions_ - it is rightfully considered a mistake).
 
 see the following guideline provided to the annotators as reference:
 
@@ -85,7 +85,14 @@ There isn't a disorder mention in this text. Diabetes is a disorder in the UMLS,
 <br><br>
  The 3rd problem however, is an inherent limitation of the HRM as it can't choose terms which have no corresponding CUI in the UMLS database and therefore a modification of the HRM logic itself is required:
 
-3. TODO: describe HRM modification
+3. An important observation is that in the Hebrew language, adding more information to nouns (making them more specific) is done by adding more words to the general term using preposition, for example:
+>'חיסון לשפעת'
+
+ >'קליניקה לטיפול בסכרת'
+
+ >'חולה סרטן הדם'
+
+ This means that considering the given term tagged by the HRM combined with one or two of the words following it - can provide the necessary medical terms that lack a CUI. 
 
 
 ## Training data construction
@@ -104,17 +111,19 @@ We collect the UMLS from the HRM output (under 'umls_match')
 We collect the term tagged in the manual annotations that corresponds to the HRM match (using the offset)  or `Nan` if there isn't one.
 
 4) <u>**Labels**</u><br>
-For the given match we keep `1` as the label if either the HRM UMLS matches with the annotations' UMLS or if the HRM candidate match (under 'cand_match') matches with the annotations' UMLS, and `0` otherwise. 
+For the given match we keep `1` as the label if either the HRM UMLS (including the non-CUI terms that we synthetically added as described [here in step 3](###Solution)) matches with the annotations' UMLS or if the HRM candidate match (under 'cand_match') matches with the annotations' UMLS, and `0` otherwise. 
   
- Comparing the HRM candidate match with the annotations' UMLS mitigates spelling mistakes in the original text: since the annotations use the exact syntax from the text, if the HRM found a CUI match with the candidate that is identical to the annotations' UMLS - then that CUI must in turn fit the annotations' UMLS as well. 
-We also do this comparison allowing difference in at most the first character for any one of the expression's words, considering term-pairs to be identical in cases such as the following:
-```
-האינסולין, אינסולין
-לטמוקסיפן, טמוקסיפן
-בטבליות, טבליות
-לרמות הסוכר, רמות סוכר
-```
- this step filtered 53% of mismatches!
+ Comparing the HRM candidate match with the annotations' UMLS mitigates small irrelevant deviations: since the annotations' UMLS use the exact syntax from the text, if the HRM found a CUI match with the candidate that is identical to the annotations' UMLS - then that CUI must in turn fit the annotations' UMLS as well. 
+In this comparison we allow a difference in at most the first character for any one of each expression's words, considering term-pairs to be identical in cases such as the following:
+> האינסולין, אינסולין
+
+ > לטמוקסיפן, טמוקסיפן
+
+ > בטבליות, טבליות
+
+ > לרמות הסוכר, רמות סוכר
+
+ this step filtered **over 50%** of mismatches!
 
 #### Utilizing BERT QA structure
 The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the _Training data construction_ section).
@@ -148,9 +157,12 @@ UMLS classifier answer: Wrong
 Real answer: Wrong
 ```
 
-## TODO
-- Fine-tune model's hyper parameters.
-- Train for 2 other communities: Depression and Sclerosis.
+## TODO 
+
+- [x] modify HRM to accept medical terms which have no corresponding CUI
+- [ ] Fine-tune model's hyper parameters.
+- [ ] Train for 2 other communities: Depression and Sclerosis.
+
 
 ## Acknowledgements
 + Yonatan Bitton's [MDTEL](https://github.com/yonatanbitton/mdtel) work.
