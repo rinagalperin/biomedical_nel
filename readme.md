@@ -169,3 +169,6 @@ Real answer: Wrong
 + Yonatan Bitton's [MDTEL](https://github.com/yonatanbitton/mdtel) work.
 + [Google's Multilingual BERT](https://github.com/google-research/bert/blob/master/multilingual.md).
 + Thanks to the [Ministry of Science and Technology](https://www.gov.il/he/departments/ministry_of_science_and_technology) for supporting our work
+
+## Contact
+:speech_balloon: rinag@post.bgu.ac.il
