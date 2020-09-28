@@ -14,7 +14,8 @@ This is in contrast to previous efforts which looked at a text sequence either f
 ### Problem identification
 Observation of the HRM output reveals 3 main problems:
 
-1. The HRM chooses candidate terms which are not actual UMLS entities, for example:
+#### problem 1
+The HRM chooses candidate terms which are not actual UMLS entities, for example:
 
  given the post:
 >ברוכים הבאים לפורום דיכאון וחרדה  כאן תוכלו לשאול  להתייעץ וגם לייעץ בנושאי חרדה ודיכאון  עצב ותחושות נפשיות  מטרת הפורום בין היתר היא לסייע לחולים כרוניים באתר כמוני הנמצאים במצבי דיכאון וחרדה כתוצאה מהמצב הרפואי בו הם נתונים  ובעיקר שיהיה לבריאות **מערכת כמוני**
@@ -26,7 +27,8 @@ Observation of the HRM output reveals 3 main problems:
 
  the candidate match 'מוני' is mapped to UMLS 'Monit' which is a drug for chest pains. It was extracted from the word 'כ**מוני**' which is the name of the online forum. 
 
-2. The HRM chooses candidate terms which are not medical terms when considering the context, for example:
+#### problem 2
+The HRM chooses candidate terms which are not medical terms when considering the context, for example:
 
  given the post:
  >בעקבות הגעתן הקרובה של התרופות האוראליות החדשות  העלנו סקר אשר יציג את עמדתכן בנושא  את הסקר ניתן לראות בתחתית עמוד הבית של **קהילת טרשת נפוצה**
@@ -38,7 +40,8 @@ Observation of the HRM output reveals 3 main problems:
 
  the candidate match 'טרשת נפוצה' is mapped to UMLS 'diffuse sclerosis' which is a disorder. 
 
-3. The HRM chooses candidate terms which are not the full medical terms due to its limitation of only being able to choose terms that have a corresponding CUI, i.e. - are part of the UMLS database. For example:
+#### problem 3
+The HRM chooses candidate terms which are not the full medical terms due to its limitation of only being able to choose terms that have a corresponding CUI, i.e. - are part of the UMLS database. For example:
 
  given the post:
  >שלום  אני חולה סוכרת ורציתי לדעת מהם היתרונות של משאבת אינסולין אומניפוד ומהם חסרונותיה  כמו כן רציתי לדעת האם יש סיכון ב**חיסון שפעת חזירים** לחולי סוכרת תודה
