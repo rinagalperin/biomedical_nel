@@ -169,8 +169,8 @@ Real answer: Wrong
 | WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |
 |:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|
 |      2      |   93.5%  |   86.8%   |   79%  |        21       |        12       |       395      |       79       |
-|      3      |     -    |     -     |    -   |        -        |        -        |        -       |        -       |
-|      4      |     -    |     -     |    -   |        -        |        -        |        -       |        -       |
+|      3      |   88.4%  |    74%    |   60%  |        86       |        45       |       871      |       129      |
+|      4      |   91.6%  |   80.2%   |   77%  |        30       |        25       |       501      |       101      |
 
 #### Inference example:<br>
 'סוכר בדם' is a medical term tagged by the manual annotators but originally not tagged by the HRM. After synthetically adding more matches to the HRM, this term is now correctly identified by our model:
@@ -213,3 +213,4 @@ UMLS classifier answer: Wrong
 
 ## :email: Contact
 rinag@post.bgu.ac.il
+schnapp@post.bgu.ac.il
