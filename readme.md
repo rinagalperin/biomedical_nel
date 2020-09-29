@@ -142,16 +142,16 @@ The inputs come in the form of a **Context** / **Question** pair, and the output
 
 ## :bar_chart: Results
 The HRM's accuracy was **44.17%**.<br>
-The following table summarizes our results on the test set for different versions of our model:
+The following tables summarize our results for different versions of our model (each version tested against a different test set due to the data changes we inject):
 
 (*) note that 'WINDOW_SIZE' represents the chosen number of words from each side (left and right) to the term.
 
 ### Baseline BERT (no HRM expansion)
-| WINDOW_SIZE | Accuracy | Precision |  Recall | False negatives | False positives | True negatives | True positives |
-|:-----------:|:--------:|:---------:|:-------:|:---------------:|:---------------:|:--------------:|:--------------:|
-|      2      |  87.986% |  84.733%  |  88.8%  |        14       |        20       |       138      |       111      |
-|      3      |  88.693% |  86.555%  | 86.555% |        16       |        16       |       148      |       103      |
-|      4      |  85.866% |    87%    | 84.615% |        22       |        18       |       122      |       121      |
+| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |
+|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|
+|      2      |    85%   |    91%    |   80%  |        32       |        13       |       129      |       133      |
+|      3      |    84%   |    82%    |   85%  |        20       |        23       |       118      |       110      |
+|      4      |   87.7%  |  86.667%  |   89%  |        11       |        14       |       87       |       91       |
 
 
 #### Inference example:<br>
