@@ -212,5 +212,5 @@ UMLS classifier answer: Wrong
 + Thanks to the [Ministry of Science and Technology](https://www.gov.il/he/departments/ministry_of_science_and_technology) for supporting our work
 
 ## :email: Contact
-rinag@post.bgu.ac.il
-schnapp@post.bgu.ac.il
+- rinag@post.bgu.ac.il
+- schnapp@post.bgu.ac.il
