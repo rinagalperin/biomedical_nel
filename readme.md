@@ -89,21 +89,34 @@ There isn't a disorder mention in this text. Diabetes is a disorder in the UMLS,
 #### Problem 3 solution
  The 3rd problem however, is an inherent limitation of the HRM as it can't choose terms which have no corresponding CUI in the UMLS database and therefore a modification of the HRM logic itself is required:
 
-An important observation is that in the Hebrew language, adding more information to nouns (making them more specific) is done by adding more words to the general term using preposition, for example:
->'חיסון לשפעת'
+An important observation is that in the Hebrew language, adding more information to nouns (making them more specific) is done by adding more words following the general term using preposition or construct state, for example:
+>'חיסון לשפעת' (preposition)
 
- >'קליניקה לטיפול בסכרת'
+ >'קליניקה לטיפול בסכרת' (preposition)
 
- >'חולה סרטן הדם'
+ >'חולה סרטן הדם' (construct state)
 
  This means that considering the given term tagged by the HRM combined with one or two of the words following it - can provide the necessary medical terms that lack a CUI. 
 
 
 ## :construction: Training
-### Data construction
+### Input
 We use the output from HRM and the manual annotations, which can be found [here](https://drive.google.com/file/d/17JTxutH15P3R-Wd4x3d5ulY22KW0vVUC/view?usp=sharing) and attempt to use a contextual relevance language model to improve
-the results of the tagged UMLS entities.
+the results of the tagged UMLS entities. We essentially implement a patch for the HRM, adding more tagged ter
 
+Intial dataset description:
+- 258 posts
+- vocabulary of size 7,094
+- 734 unique terms tagged by HRM
+- overall terms frequencies:
+
+| Term Length | Frequency |
+|:-----------:|:---------:|
+|      1      |    2331   |
+|      2      |    397    |
+|      3      |     90    |
+ 
+### Data construction
 For each entry in the data (post from **Diabetes** community), we go over the matches found and do the following per-match:
 
 1) <u>**word context**</u><br>
@@ -147,11 +160,11 @@ The following tables summarize our results for different versions of our model (
 (*) note that 'WINDOW_SIZE' represents the chosen number of words from each side (left and right) to the term.
 
 ### Baseline BERT (no HRM expansion)
-| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |
-|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|
-|      2      |    85%   |    91%    |   80%  |        32       |        13       |       129      |       133      |
-|      3      |    84%   |    82%    |   85%  |        20       |        23       |       118      |       110      |
-|      4      |   87.7%  |  86.667%  |   89%  |        11       |        14       |       87       |       91       |
+| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |  F1 measure |
+|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:-----------:|
+|      2      |    85%   |    91%    |   80%  |        32       |        13       |       129      |       133      |     85.15   |
+|      3      |    84%   |    82%    |   85%  |        20       |        23       |       118      |       110      |     83.47   |
+|      4      |   87.7%  |  86.667%  |   89%  |        11       |        14       |       87       |       91       |     87.8    |
 
 
 #### Inference example:<br>
@@ -166,11 +179,11 @@ Real answer: Wrong
 ```
 
 ### BERT model w/ HRM expansion
-| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |
-|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|
-|      2      |   93.5%  |   86.8%   |   79%  |        21       |        12       |       395      |       79       |
-|      3      |   88.4%  |    74%    |   60%  |        86       |        45       |       871      |       129      |
-|      4      |   91.6%  |   80.2%   |   77%  |        30       |        25       |       501      |       101      |
+| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |  F1 measure |
+|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:-----------:|
+|      2      |   93.5%  |   86.8%   |   79%  |        21       |        12       |       395      |       79       |     82.72   |
+|      3      |   88.4%  |    74%    |   60%  |        86       |        45       |       871      |       129      |     66.3    |
+|      4      |   91.6%  |   80.2%   |   77%  |        30       |        25       |       501      |       101      |     78.56   |
 
 #### Inference example:<br>
 'סוכר בדם' is a medical term tagged by the manual annotators but originally not tagged by the HRM. After synthetically adding more matches to the HRM, this term is now correctly identified by our model:
