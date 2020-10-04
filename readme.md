@@ -66,7 +66,7 @@ The HRM chooses candidate terms which are not the full medical terms due to its 
 
 Overall we went over about 200 posts from the three communities (diabetes, sclerosis, depression) and their corresponding HRM tags and found that these problems occur quite often (about 20% of the posts were related to one or more of the above tagging mistakes). 
 
-Addressing these problems can result in higher recall and better generalization.
+Addressing these problems can result in higher precision and recall. This can be validated using the F1 metric.
 
 ### Solution
 #### Problems 1, 2 solution
@@ -155,11 +155,22 @@ The inputs come in the form of a **Context** / **Question** pair, and the output
 
 ## :bar_chart: Results
 The HRM's accuracy was **44.17%**.<br>
-The following tables summarize our results for different versions of our model (each version tested against a different test set due to the data changes we inject):
+MDTEL's F1-measure on Diabetes community was **73%**.
+<br><br>
+The following tables summarize our results for different versions of our model. Each version tested against both the baseline test set and the expanded one (containing new terms):
 
 (*) note that 'WINDOW_SIZE' represents the chosen number of words from each side (left and right) to the term.
 
 ### Baseline BERT (no HRM expansion)
+#### baseline test set
+| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |  F1 measure  |
+|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
+|      2      |    85%   |    91%    |   80%  |        32       |        13       |       129      |       133      |     85.15%   |
+|      3      |    84%   |    82%    |   85%  |        20       |        23       |       118      |       110      |     83.47%   |
+|      4      |   87.7%  |  86.667%  |   89%  |        11       |        14       |       87       |       91       |     87.8%    |
+
+
+#### expanded test set
 | WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |  F1 measure  |
 |:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
 |      2      |    85%   |    91%    |   80%  |        32       |        13       |       129      |       133      |     85.15%   |
@@ -179,6 +190,17 @@ Real answer: Wrong
 ```
 
 ### BERT model w/ HRM expansion
+
+#### baseline test set
+
+| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |  F1 measure  |
+|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
+|      2      |   93.5%  |   86.8%   |   79%  |        21       |        12       |       395      |       79       |     82.72%   |
+|      3      |   88.4%  |    74%    |   60%  |        86       |        45       |       871      |       129      |     66.3%    |
+|      4      |   91.6%  |   80.2%   |   77%  |        30       |        25       |       501      |       101      |     78.56%   |
+
+#### expanded test set
+
 | WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |  F1 measure  |
 |:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
 |      2      |   93.5%  |   86.8%   |   79%  |        21       |        12       |       395      |       79       |     82.72%   |
