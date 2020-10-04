@@ -148,7 +148,9 @@ Final data output can be found [here](training_data/output_data/training_data_4.
 
 ## :microscope: Testing
 ### Data
-Instead of splitting the output of the [data construction process](#Data-construction) into training/testing sets, we split the HRM output into such sets (90% training, 10% testing) and then perform the data construction on each set. This helps avoid overfitting.
+Instead of splitting the output of the [data construction process](#Data-construction) into training/testing sets, we split the [input](#input) (i.e. - the HRM output) into such sets (90% training, 10% testing) and then perform the data construction on each set. This helps avoid overfitting.
+
+About 12% of unique terms in the test set have been seen during training, however, since they appear in novel contexts it is important to test the model's answer to them.
 
 ### Utilizing BERT QA structure
 The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the [data construction process](#Data-construction) section).
