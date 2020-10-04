@@ -110,11 +110,11 @@ Intial dataset description:
 - 734 unique terms tagged by HRM
 - overall terms frequencies:
 
-| Term Length | Frequency |
-|:-----------:|:---------:|
-|      1      |    2331   |
-|      2      |    397    |
-|      3      |     90    |
+| Term Length (words count) | Frequency |
+|:-------------------------:|:---------:|
+|             1             |    2331   |
+|             2             |    397    |
+|             3             |     90    |
  
 ### Data construction
 For each entry in the data (post from **Diabetes** community), we go over the matches found and do the following per-match:
