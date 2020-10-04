@@ -1,16 +1,15 @@
 # Hebrew Contextual Relevance Model For UMLS Entity Linking Using BERT
 
 ## :dart: Goal
-Linking Hebrew terms to Unified Medical Language System (UMLs) entities can benefit text-analytics methods, make information retrieval and analysis 
-easier and more accurate. This known problem is especially challenging in Hebrew since the language has different writing and sound systems compared to English. Our goal is to improve tagging results done by [MDTEL](https://github.com/yonatanbitton/mdtel)'s High Recall Matcher (HRM) using a Hebrew contextual relevance model and utilizing the [manual annotations](https://drive.google.com/file/d/17JTxutH15P3R-Wd4x3d5ulY22KW0vVUC/view?usp=sharing).
+Linking Hebrew terms to Unified Medical Language System (UMLs) entities can benefit text-analytics methods and make information retrieval and analysis 
+easier and more accurate. This known problem is especially challenging in Hebrew since the language has different writing and sound systems compared to English. Our goal is to improve tagging results done by [MDTEL](https://github.com/yonatanbitton/mdtel)'s High Recall Matcher (HRM) using a Hebrew contextual relevance model and utilizing the [manual annotations](https://drive.google.com/file/d/17JTxutH15P3R-Wd4x3d5ulY22KW0vVUC/view?usp=sharing) as ground truth.
 
 
-## :game_die: Our approach
+## :game_die: Our contribution
 We utilize **BERT** (Bidirectional Encoder Representations from Transformers), a technique for natural language processing (NLP) pre-training developed by Google.
-Its key technical innovation is applying the bidirectional training of Transformer, a popular attention model, to language modelling.
-This is in contrast to previous efforts which looked at a text sequence either from left to right or combined left-to-right and right-to-left training.
+Its key technical innovation is applying the bidirectional training of Transformer, a popular attention model, to language modelling. To do so, we implement a reduction from the HRM output to a different data structure that can be used as an input to BERT. Moreover, we perform data augmentation to improve our learning model's performance.
 
-## :bulb: Hypothesis
+## :bulb: Hypothesis & approach
 ### Problem identification
 Observation of the HRM output reveals 3 main problems:
 
