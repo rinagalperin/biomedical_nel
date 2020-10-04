@@ -160,11 +160,11 @@ The following tables summarize our results for different versions of our model (
 (*) note that 'WINDOW_SIZE' represents the chosen number of words from each side (left and right) to the term.
 
 ### Baseline BERT (no HRM expansion)
-| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |  F1 measure |
-|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:-----------:|
-|      2      |    85%   |    91%    |   80%  |        32       |        13       |       129      |       133      |     85.15   |
-|      3      |    84%   |    82%    |   85%  |        20       |        23       |       118      |       110      |     83.47   |
-|      4      |   87.7%  |  86.667%  |   89%  |        11       |        14       |       87       |       91       |     87.8    |
+| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |  F1 measure  |
+|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
+|      2      |    85%   |    91%    |   80%  |        32       |        13       |       129      |       133      |     85.15%   |
+|      3      |    84%   |    82%    |   85%  |        20       |        23       |       118      |       110      |     83.47%   |
+|      4      |   87.7%  |  86.667%  |   89%  |        11       |        14       |       87       |       91       |     87.8%    |
 
 
 #### Inference example:<br>
@@ -179,11 +179,11 @@ Real answer: Wrong
 ```
 
 ### BERT model w/ HRM expansion
-| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |  F1 measure |
-|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:-----------:|
-|      2      |   93.5%  |   86.8%   |   79%  |        21       |        12       |       395      |       79       |     82.72   |
-|      3      |   88.4%  |    74%    |   60%  |        86       |        45       |       871      |       129      |     66.3    |
-|      4      |   91.6%  |   80.2%   |   77%  |        30       |        25       |       501      |       101      |     78.56   |
+| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |  F1 measure  |
+|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
+|      2      |   93.5%  |   86.8%   |   79%  |        21       |        12       |       395      |       79       |     82.72%   |
+|      3      |   88.4%  |    74%    |   60%  |        86       |        45       |       871      |       129      |     66.3%    |
+|      4      |   91.6%  |   80.2%   |   77%  |        30       |        25       |       501      |       101      |     78.56%   |
 
 #### Inference example:<br>
 'סוכר בדם' is a medical term tagged by the manual annotators but originally not tagged by the HRM. After synthetically adding more matches to the HRM, this term is now correctly identified by our model:
