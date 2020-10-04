@@ -146,7 +146,7 @@ In this comparison we allow a difference in at most the first character for any 
 ### Output
 Final data output can be found [here](training_data/output_data/training_data_4.json) (different outputs are created depending on the chosen window size).
 
-## :microscope: Testing
+## :microscope: Testing and evaluation
 ### Data
 Instead of splitting the output of the [data construction process](#Data-construction) into training/testing sets, we split the [input](#input) (i.e. - the HRM output) into such sets (90% training, 10% testing) and then perform the data construction on each set. This helps avoid overfitting.
 
@@ -155,7 +155,7 @@ About 12% of unique terms in the test set have been seen during training, howeve
 ### Utilizing BERT QA structure
 The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the [data construction process](#Data-construction) section).
 
-## :bar_chart: Results
+## :bar_chart: Intrinsic evaluation results (UMLS tagging)
 The HRM's accuracy was **44.17%**.<br>
 MDTEL's F1-measure on Diabetes community was **73%**.
 <br><br>
@@ -235,6 +235,9 @@ when testing the same sentence but with a less precise HRM match ('חיסון' a
 HRM match: חיסון
 UMLS classifier answer: Wrong
 ```
+
+## :bar_chart: Extrinsic evaluation results (information retrieval improvement)
+xxx
 
 ## :hammer: TODO 
 
