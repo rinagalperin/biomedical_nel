@@ -129,7 +129,6 @@ We collect the term tagged in the manual annotations that corresponds to the HRM
 4) <u>**Labels**</u><br>
 For the given match we keep `1` as the label if either the HRM UMLS matches the annotations' UMLS or if the HRM candidate match (under 'cand_match') matches the annotations' UMLS, and `0` otherwise.<br><br>Comparing the HRM candidate match with the annotations' UMLS mitigates small irrelevant deviations: since the annotations' UMLS use the exact syntax from the text, if the HRM found a CUI match with the candidate that is identical to the annotations' UMLS - then that CUI must in turn fit the annotations' UMLS as well. 
 In this comparison we allow a difference in at most the first character (provided that it is a functional character) for any one of each expression's words, considering term-pairs to be identical in cases such as the following:
-<br>
 
    > האינסולין, אינסולין
 
@@ -141,7 +140,8 @@ In this comparison we allow a difference in at most the first character (provide
 
    this step filtered **over 50%** of mismatches!
  
- 5) for the non-baseline model we expand the UMLS from the HRM to consider non-CUI terms and synthetically add them as examples for our BERT model (as described [here](#Problem-3-solution)). For each expanded term, we repeat steps 1 and 4.
+ 5) <u>**Data augmentation**</u><br>
+ For the non-baseline model we expand the UMLS from the HRM to consider non-CUI terms and synthetically add them as examples for our BERT model (as described [here](#Problem-3-solution)). For each expanded term, we repeat steps 1 and 4.
 
 
 ### Output
