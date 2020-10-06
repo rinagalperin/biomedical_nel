@@ -65,7 +65,7 @@ The HRM chooses candidate terms which are not the full medical terms due to its 
 
 Overall we went over about 200 posts from the three communities (diabetes, sclerosis, depression) and their corresponding HRM tags and found that these problems occur quite often (about 20% of the posts were related to one or more of the above tagging mistakes). 
 
-Addressing these problems can result in higher precision and recall. This can be validated using the F1 metric.
+Addressing these problems can result in higher precision and recall.
 
 ### Solution
 #### Problems 1, 2 solution
@@ -88,20 +88,19 @@ There isn't a disorder mention in this text. Diabetes is a disorder in the UMLS,
 #### Problem 3 solution
  The 3rd problem however, is an inherent limitation of the HRM as it can't choose terms which have no corresponding CUI in the UMLS database and therefore a modification of the HRM logic itself is required:
 
-An important observation is that in the Hebrew language, adding more information to nouns (making them more specific) is done by adding more words following the general term using preposition or construct state, for example:
+An important observation is that in the Hebrew language, adding more information to nouns (making them more specific) is done by adding more words following the general term using preposition, construct state or a relative clause, for example:
 >'חיסון לשפעת' (preposition)
 
  >'קליניקה לטיפול בסכרת' (preposition)
 
  >'חולה סרטן הדם' (construct state)
 
- This means that considering the given term tagged by the HRM combined with one or two of the words following it - can provide the necessary medical terms that lack a CUI. 
+ This means that considering the given term tagged by the HRM combined with one or two of the words following it - can provide the necessary medical terms that lack a CUI. We essentially implement a patch for the HRM, adding more tagged terms.
 
 
 ## :construction: Training
 ### Input
-We use the output from HRM and the manual annotations, which can be found [here](https://drive.google.com/file/d/17JTxutH15P3R-Wd4x3d5ulY22KW0vVUC/view?usp=sharing) and attempt to use a contextual relevance language model to improve
-the results of the tagged UMLS entities. We essentially implement a patch for the HRM, adding more tagged ter
+We use the output from HRM and the manual annotations (which can be found [here](https://drive.google.com/file/d/17JTxutH15P3R-Wd4x3d5ulY22KW0vVUC/view?usp=sharing)) to construct the training and testing data for our contextual relevance model. 
 
 Intial dataset description:
 - 258 posts
@@ -122,16 +121,16 @@ For each entry in the data (post from **Diabetes** community), we go over the ma
 Using the offset of the term we find the original word from the text and create a window around it (depending on the chosen WINDOW_SIZE value) _to get the word context_ of the term (WINDOW_SIZE words to the left of the term and WINDOW_SIZE words to the right). 
 
 2) <u>**UMLS from HRM**</u><br>
-We collect the UMLS from the HRM output (under 'umls_match')
+We collect the UMLS from the HRM output (under 'umls_match').
 
 3) <u>**UMLS from manual annotations**</u><br>
 We collect the term tagged in the manual annotations that corresponds to the HRM match (using the offset)  or `Nan` if there isn't one.
 
 4) <u>**Labels**</u><br>
-For the given match we keep `1` as the label if either the HRM UMLS (including the non-CUI terms that we synthetically added as described [here](#Problem-3-solution)) matches with the annotations' UMLS or if the HRM candidate match (under 'cand_match') matches with the annotations' UMLS, and `0` otherwise. 
+For the given match we keep `1` as the label if either the HRM UMLS matches with the annotations' UMLS or if the HRM candidate match (under 'cand_match') matches with the annotations' UMLS, and `0` otherwise. 
   
  Comparing the HRM candidate match with the annotations' UMLS mitigates small irrelevant deviations: since the annotations' UMLS use the exact syntax from the text, if the HRM found a CUI match with the candidate that is identical to the annotations' UMLS - then that CUI must in turn fit the annotations' UMLS as well. 
-In this comparison we allow a difference in at most the first character for any one of each expression's words, considering term-pairs to be identical in cases such as the following:
+In this comparison we allow a difference in at most the first character (provided that it is a functional character) for any one of each expression's words, considering term-pairs to be identical in cases such as the following:
 > האינסולין, אינסולין
 
  > לטמוקסיפן, טמוקסיפן
@@ -141,6 +140,9 @@ In this comparison we allow a difference in at most the first character for any 
  > לרמות הסוכר, רמות סוכר
 
  this step filtered **over 50%** of mismatches!
+ 
+ 5) for the non-baseline model we expand the UMLS from the HRM to consider non-CUI terms and synthetically add them as examples for our BERT model (as described [here](#Problem-3-solution)). For each expanded term, we repeat steps 1 and 4.
+
 
 ### Output
 Final data output can be found [here](training_data/output_data/training_data_4.json) (different outputs are created depending on the chosen window size).
@@ -149,7 +151,7 @@ Final data output can be found [here](training_data/output_data/training_data_4.
 ### Data
 Instead of splitting the output of the [data construction process](#Data-construction) into training/testing sets, we split the [input](#input) (i.e. - the HRM output) into such sets (90% training, 10% testing) and then perform the data construction on each set. This helps avoid overfitting.
 
-About 12% of unique terms in the test set have been seen during training, however, since they appear in novel contexts it is important to test the model's answer to them.
+About 12% of unique terms in the test set have been seen during training, however, since they appear in different contexts - it is important to test the model's answer to them.
 
 ### Utilizing BERT QA structure
 The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the [data construction process](#Data-construction) section).
@@ -160,23 +162,23 @@ MDTEL's F1-measure on Diabetes community was **73%**.
 <br><br>
 The following tables summarize our results for different versions of our model. Each version tested against both the baseline test set and the expanded one (containing new terms):
 
-(*) note that 'WINDOW_SIZE' represents the chosen number of words from each side (left and right) to the term.
+(*) note that 'WINDOW_SIZE' represents the chosen number of words from each side (left *and* right) to the term.
 
-### Baseline BERT (no HRM expansion)
+### Baseline BERT (no HRM expansion in [step 5](#Data-construction))
 #### baseline test set
-| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |  F1 measure  |
-|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
-|      2      |    85%   |    91%    |   80%  |        32       |        13       |       129      |       133      |     85.15%   |
-|      3      |    84%   |    82%    |   85%  |        20       |        23       |       118      |       110      |     83.47%   |
-|      4      |   87.7%  |  86.667%  |   89%  |        11       |        14       |       87       |       91       |     87.8%    |
+| WINDOW_SIZE |   Accuracy  |  Precision  | Recall | False negatives | False positives | True negatives | True positives |  F1 measure  |
+|:-----------:|:-----------:|:-----------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
+|      2      |    92.9%    |    87.6%    |   96%  |        5        |        17       |       166      |       120      |     91.6%    |
+|      3      |     95%     |    89.8%    |   99%  |        1        |        14       |       169      |       124      |     94.3%    | 
+|      4      |     58%     |    38.9%    |   5.6% |       118       |        11       |       172      |        7       |      9.8%    |
 
 
 #### expanded test set
-| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |  F1 measure  |
-|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
-|      2      |    85%   |    91%    |   80%  |        32       |        13       |       129      |       133      |     85.15%   |
-|      3      |    84%   |    82%    |   85%  |        20       |        23       |       118      |       110      |     83.47%   |
-|      4      |   87.7%  |  86.667%  |   89%  |        11       |        14       |       87       |       91       |     87.8%    |
+| WINDOW_SIZE |   Accuracy  |  Precision  |  Recall  | False negatives | False positives | True negatives | True positives |  F1 measure  |
+|:-----------:|:-----------:|:-----------:|:--------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
+|      2      |    38.3%    |    19.5%    |   95.8%  |        6        |        564      |       217      |       137      |     32.5%    |
+|      3      |    40.4%    |    20.5%    |   99.3%  |        1        |        550      |       231      |       142      |      34%     |
+|      4      |    80.7%    |    11.11%   |   3.5%   |       138       |        40       |       741      |        5       |      5.3%    |
 
 
 #### Inference example:<br>
@@ -194,19 +196,19 @@ Real answer: Wrong
 
 #### baseline test set
 
-| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |  F1 measure  |
-|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
-|      2      |   93.5%  |   86.8%   |   79%  |        21       |        12       |       395      |       79       |     82.72%   |
-|      3      |   88.4%  |    74%    |   60%  |        86       |        45       |       871      |       129      |     66.3%    |
-|      4      |   91.6%  |   80.2%   |   77%  |        30       |        25       |       501      |       101      |     78.56%   |
+| WINDOW_SIZE | Accuracy | Precision |  Recall  | False negatives | False positives | True negatives | True positives |  F1 measure  |
+|:-----------:|:--------:|:---------:|:--------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
+|      2      |    92%   |   89.8%   |    91%   |        11       |        13       |       170      |       114      |     90.5%    |
+|      3      |    82%   |    77%    |    79%   |        26       |        29       |       154      |        99      |     78.3%    |
+|      4      |   85.7%  |   84.6%   |   79.2%  |        26       |        18       |       165      |        99      |     81.8%    |
 
 #### expanded test set
 
-| WINDOW_SIZE | Accuracy | Precision | Recall | False negatives | False positives | True negatives | True positives |  F1 measure  |
-|:-----------:|:--------:|:---------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
-|      2      |   93.5%  |   86.8%   |   79%  |        21       |        12       |       395      |       79       |     82.72%   |
-|      3      |   88.4%  |    74%    |   60%  |        86       |        45       |       871      |       129      |     66.3%    |
-|      4      |   91.6%  |   80.2%   |   77%  |        30       |        25       |       501      |       101      |     78.56%   |
+| WINDOW_SIZE | Accuracy | Precision |  Recall  | False negatives | False positives | True negatives | True positives |  F1 measure  |
+|:-----------:|:--------:|:---------:|:--------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
+|      2      |   97.8%  |   89.5%   |   89.5%  |        25       |        25       |       766      |       128      |     89.5%    |
+|      3      |    92%   |   73.2%   |   76.2%  |        34       |        40       |       741      |       109      |     74.7%    |
+|      4      |   93.2%  |   78.6%   |    77%   |        33       |        30       |       751      |       110      |     77.7%    |
 
 #### Inference example:<br>
 'סוכר בדם' is a medical term tagged by the manual annotators but originally not tagged by the HRM. After synthetically adding more matches to the HRM, this term is now correctly identified by our model:
