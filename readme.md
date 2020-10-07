@@ -69,7 +69,7 @@ Addressing these problems can result in higher precision and recall.
 
 ### Solution
 #### Problems 1, 2 solution
-Intuitively, using the context of the word in the post can give better indication of whether or not it is an actual medical term or not, which addresses the first 2 problems:
+Intuitively, using the context of the word in the post can give better indication of whether it is an actual medical term or not, which addresses the first 2 problems:
 
 1. 'מערכת כמוני' can imply that 'כמוני' is a type/name of a system and not a drug.
 
