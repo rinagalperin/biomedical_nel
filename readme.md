@@ -98,7 +98,7 @@ An important observation is that in the Hebrew language, adding more information
 
 ## :construction: Training
 ### Input
-We use the output from HRM and the manual annotations (which can be found [here](https://drive.google.com/file/d/17JTxutH15P3R-Wd4x3d5ulY22KW0vVUC/view?usp=sharing)) to construct the training and testing data for our contextual relevance model. 
+We use the output from the HRM and the manual annotations regarding the **Diabetes** community (which can be found [here](https://drive.google.com/file/d/17JTxutH15P3R-Wd4x3d5ulY22KW0vVUC/view?usp=sharing)) to construct the training and testing data for our contextual relevance model. 
 
 Intial dataset description:
 - 258 posts
@@ -113,7 +113,7 @@ Intial dataset description:
 |             3             |     90    |
  
 ### Data construction
-For each entry in the data (post from **Diabetes** community), we go over the matches found and do the following per-match:
+For each entry in the data (post), we go over the matches found and do the following per-match:
 
 1) <u>**word context**</u><br>
 Using the offset of the term we find the original word from the text and create a window around it (depending on the chosen WINDOW_SIZE value) _to get the word context_ of the term (WINDOW_SIZE words to the left of the term and WINDOW_SIZE words to the right). 
