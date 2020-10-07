@@ -86,16 +86,14 @@ see the following guideline provided to the annotators as reference:
 There isn't a disorder mention in this text. Diabetes is a disorder in the UMLS, but in this context it isn't meant as disease. Nobody suffers from the disease in this context. 
 
 #### Problem 3 solution
- The 3rd problem however, is an inherent limitation of the HRM as it can't choose terms which have no corresponding CUI in the UMLS database and therefore a modification of the HRM logic itself is required:
+ The 3rd problem however, is an inherent limitation of the HRM as it can't choose terms which have no corresponding CUI in the UMLS database and therefore a modification of the HRM output is required.
 
 An important observation is that in the Hebrew language, adding more information to nouns (making them more specific) is done by adding more words following the general term using preposition, construct state or a relative clause, for example:
->'חיסון לשפעת' (preposition)
-
- >'קליניקה לטיפול בסכרת' (preposition)
+>'טבליות להורדת הסוכר' (preposition)
 
  >'חולה סרטן הדם' (construct state)
 
- This means that considering the given term tagged by the HRM combined with one or two of the words following it - can provide the necessary medical terms that lack a CUI. We essentially implement a patch for the HRM, adding more tagged terms.
+ This means that considering the term tagged by the HRM (e.g. - 'חולה', 'טבליות') combined with a few of the words following it - can provide the necessary medical terms that lack a CUI. We essentially implement a patch for the HRM, adding more tagged terms.
 
 
 ## :construction: Training
