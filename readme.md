@@ -164,11 +164,11 @@ The following tables summarize our results for different versions of our model. 
 
 ### Baseline BERT (no HRM expansion in [step 5](#Data-construction))
 #### baseline test set
-| WINDOW_SIZE |   Accuracy  |  Precision  | Recall | False negatives | False positives | True negatives | True positives |  F1 measure  |
-|:-----------:|:-----------:|:-----------:|:------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
-|      2      |    92.9%    |    87.6%    |   96%  |        5        |        17       |       166      |       120      |     91.6%    |
-|      3      |     95%     |    89.8%    |   99%  |        1        |        14       |       169      |       124      |     94.3%    | 
-|      4      |     58%     |    38.9%    |   5.6% |       118       |        11       |       172      |        7       |      9.8%    |
+| WINDOW_SIZE |   Accuracy  |  Precision  |  Recall  | False negatives | False positives | True negatives | True positives |  F1 measure  |
+|:-----------:|:-----------:|:-----------:|:--------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
+|      2      |    92.9%    |    87.6%    |    96%   |        5        |        17       |       166      |       120      |     91.6%    |
+|      3      |     95%     |    89.8%    |    99%   |        1        |        14       |       169      |       124      |     94.3%    | 
+|      4      |    82.8%    |    75.7%    |   84.8%  |        19       |        34       |       149      |       106      |     79.9%    |
 
 
 #### expanded test set
@@ -176,7 +176,7 @@ The following tables summarize our results for different versions of our model. 
 |:-----------:|:-----------:|:-----------:|:--------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
 |      2      |    38.3%    |    19.5%    |   95.8%  |        6        |        564      |       217      |       137      |     32.5%    |
 |      3      |    40.4%    |    20.5%    |   99.3%  |        1        |        550      |       231      |       142      |      34%     |
-|      4      |    80.7%    |    11.11%   |   3.5%   |       138       |        40       |       741      |        5       |      5.3%    |
+|      4      |    35.5%    |    17.7%    |   86.7%  |       19        |        577      |       204      |       124      |     29.4%    |
 
 
 #### Inference example:<br>
