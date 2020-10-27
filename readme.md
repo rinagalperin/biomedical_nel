@@ -139,11 +139,11 @@ In this comparison we allow a difference in at most the first character (provide
 
    this step filtered **over 50%** of mismatches!
    
-   <b>Step 4 results in "baseline train/test sets", containing about 1,400/150 examples, respectively (changes each run)</b>
+   Step 4 results in <b>"baseline train/test sets"</b>, containing about 1,400/150 examples, respectively (changes each run)
  
  5) <u>**Data augmentation**</u><br>
  For the non-baseline model we expand the UMLS from the HRM to consider non-CUI terms and synthetically add them as examples for our BERT model (as described [here](#Problem-3-solution)). For each expanded term, we repeat steps 1 and 4.
- <br><b>Step 5 results in "expanded train/test sets", containing about 4,000/800 examples, respectively (changes each run)</b>
+ <br>Step 5 results in <b>"expanded train/test sets"</b>, containing about 4,000/800 examples, respectively (changes each run)
 
 ### Output
 Final data output can be found [here](training_data/output_data/training_data_4.json) (different outputs are created depending on the chosen window size).
@@ -199,7 +199,9 @@ Since we perform data augmentation and add at least one more FP match for each H
 |    18.17%   |     92.9%     |     30.4%    |
 
 ### MDTEL's results
-reported F1-measure on Diabetes community was **73%**.
+|  Precision  |     Recall    |  F1 measure  |
+|:-----------:|:-------------:|:------------:|
+|      71%    |      75%      |      73%     |
 
 ### Our results
 The following tables summarize our results for different versions of our model, comparing our performance to the HRM.
@@ -209,19 +211,19 @@ Each version tested against both the baseline test set and the expanded one (con
 
 #### Baseline BERT (no HRM expansion in [step 5](#Data-construction))
 ##### baseline test set
-| WINDOW_SIZE |   Accuracy  |  Precision  |  Recall  | False negatives | False positives | True negatives | True positives |  F1 measure  |
-|:-----------:|:-----------:|:-----------:|:--------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
-|      2      |    92.9%    |    87.6%    |    96%   |        5        |        17       |       166      |       120      |     91.6%    |
-|      3      |     95%     |    89.8%    |    99%   |        1        |        14       |       169      |       124      |     94.3%    | 
-|      4      |    82.8%    |    75.7%    |   84.8%  |        19       |        34       |       149      |       106      |     79.9%    |
+| WINDOW_SIZE |   Accuracy  |  Precision  |   Recall   | False negatives | False positives | True negatives | True positives |  F1 measure  |
+|:-----------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
+|      2      |     89%     |    85.3%    |    84.7%   |        22       |        21       |       227      |       122      |      85%     |
+|      3      |    88.8%    |    84.2%    |    85.4%   |        21       |        23       |       225      |       123      |     84.8%    | 
+|      4      |    89.3%    |    85.4%    |    85.4%   |        21       |        21       |       227      |       123      |     85.4%    |
 
 
 ##### expanded test set
-| WINDOW_SIZE |   Accuracy  |  Precision  |  Recall  | False negatives | False positives | True negatives | True positives |  F1 measure  |
-|:-----------:|:-----------:|:-----------:|:--------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
-|      2      |    38.3%    |    19.5%    |   95.8%  |        6        |        564      |       217      |       137      |     32.5%    |
-|      3      |    40.4%    |    20.5%    |   99.3%  |        1        |        550      |       231      |       142      |      34%     |
-|      4      |    35.5%    |    17.7%    |   86.7%  |       19        |        577      |       204      |       124      |     29.4%    |
+| WINDOW_SIZE |   Accuracy  |  Precision  |   Recall   | False negatives | False positives | True negatives | True positives |  F1 measure  |
+|:-----------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
+|      2      |    36.5%    |    18.5%    |    88.2%   |       22        |        725      |       264      |       165      |     30.6%    |
+|      3      |    36.5%    |    18.5%    |    88.2%   |       22        |        725      |       264      |       165      |     30.6%    |
+|      4      |    40.5%    |    19.6%    |    88.2%   |       22        |        677      |       312      |       165      |     32.1%    |
 
 
 ##### Inference example:<br>
@@ -239,19 +241,19 @@ Real answer: Wrong
 
 ##### baseline test set
 
-| WINDOW_SIZE | Accuracy | Precision |  Recall  | False negatives | False positives | True negatives | True positives |  F1 measure  |
-|:-----------:|:--------:|:---------:|:--------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
-|      2      |    92%   |   89.8%   |    91%   |        11       |        13       |       170      |       114      |     90.5%    |
-|      3      |    82%   |    77%    |    79%   |        26       |        29       |       154      |        99      |     78.3%    |
-|      4      |   85.7%  |   84.6%   |   79.2%  |        26       |        18       |       165      |        99      |     81.8%    |
+| WINDOW_SIZE |   Accuracy  |  Precision  |   Recall   | False negatives | False positives | True negatives | True positives |  F1 measure  |
+|:-----------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
+|      2      |     89%     |    82.2%    |    89.6%   |        15       |        28       |       220      |       129      |     85.7%    |
+|      3      |     87%     |     80%     |     86%    |        20       |        31       |       217      |       124      |     82.9%    |
+|      4      |     87%     |     80%     |     87%    |        19       |        31       |       217      |       125      |     83.3%    |
 
 ##### expanded test set
 
-| WINDOW_SIZE | Accuracy | Precision |  Recall  | False negatives | False positives | True negatives | True positives |  F1 measure  |
-|:-----------:|:--------:|:---------:|:--------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
-|      2      |   97.8%  |   89.5%   |   89.5%  |        25       |        25       |       766      |       128      |     89.5%    |
-|      3      |    92%   |   73.2%   |   76.2%  |        34       |        40       |       741      |       109      |     74.7%    |
-|      4      |   93.2%  |   78.6%   |    77%   |        33       |        30       |       751      |       110      |     77.7%    |
+| WINDOW_SIZE |   Accuracy  |  Precision  |   Recall   | False negatives | False positives | True negatives | True positives |  F1 measure  |
+|:-----------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
+|      2      |     91.2%   |     67.5%   |    85.6%   |        27       |        77       |       912      |       160      |     75.5%    |
+|      3      |     89.7%   |     62.8%   |    86.6%   |        25       |        96       |       893      |       162      |     72.8%    |
+|      4      |     89.5%   |     62.3%   |    85.6%   |        27       |        97       |       892      |       160      |     72.1%    |
 
 ##### Inference example:<br>
 'סוכר בדם' is a medical term tagged by the manual annotators but originally not tagged by the HRM. After synthetically adding more matches to the HRM, this term is now correctly identified by our model:
