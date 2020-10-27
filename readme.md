@@ -34,10 +34,10 @@ The HRM chooses candidate terms which are not medical terms when considering the
 
  The HRM output contains the following match:
 ```
-{"cand_match": "טרשת נפוצה", "umls_match": "טרשת נפוצה", "sim": 1.0, "cui": "C0007795", "match_eng": "diffuse sclerosis", "hebrew_key": "post_txt", "match_tui": "T047", "semantic_type": "Disorder", "all_match_occ": [130], "curr_occurence_offset": 130}
+{"cand_match": "טרשת נפוצה", "umls_match": "טרשת נפוצה", "sim": 1.0, "cui": "C0007795", "match_eng": "multiple sclerosis", "hebrew_key": "post_txt", "match_tui": "T047", "semantic_type": "Disorder", "all_match_occ": [130], "curr_occurence_offset": 130}
 ```
 
- the candidate match 'טרשת נפוצה' is mapped to UMLS 'diffuse sclerosis' which is a disorder. 
+ the candidate match 'טרשת נפוצה' is mapped to UMLS 'multiple sclerosis' which is a disorder. 
 
 #### Problem 3
 The HRM chooses candidate terms which are not the full medical terms due to its limitation of only being able to choose terms that have a corresponding CUI, i.e. - are part of the UMLS database. For example:
@@ -102,9 +102,10 @@ We use the output from the HRM and the manual annotations regarding the **Diabet
 
 Intial dataset description:
 - 258 posts
-- vocabulary of size 7,094
+- 22,677 tokens
+- vocabulary of size 7,094 (unique tokens)
 - 734 unique terms tagged by HRM
-- overall terms frequencies:
+- tagged terms frequencies:
 
 | Term Length (words count) | Frequency |
 |:-------------------------:|:---------:|
@@ -145,14 +146,17 @@ In this comparison we allow a difference in at most the first character (provide
 ### Output
 Final data output can be found [here](training_data/output_data/training_data_4.json) (different outputs are created depending on the chosen window size).
 
+### BERT model
+BERT, or Bidirectional Encoder Representations from Transformers, is a new method of pre-training language representations which obtains state-of-the-art results on a wide array of Natural Language Processing (NLP) tasks.
+Pre-training BERT is fairly expensive but it is a one-time procedure for each language so we can utilize Google's multilingual BERT and avoid training our own model from scratch.
+The multilingual BERT model was pre-trained on the top 100 languages with the largest Wikipedias. The entire Wikipedia dump for each language (excluding user and talk pages) was taken as the training data for each language.
+Fine-tuning BERT is inexpensive, we chsoe to utilize BERT's QA structure where the inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the [data construction process](#Data-construction) section).
+
 ## :microscope: Testing and evaluation
 ### Data
 Instead of splitting the output of the [data construction process](#Data-construction) into training/testing sets, we split the [input](#input) (i.e. - the HRM output) into such sets (90% training, 10% testing) and then perform the data construction on each set. This helps avoid overfitting.
 
 About 12% of unique terms in the test set have been seen during training, however, since they appear in different contexts - it is important to test the model's answer to them.
-
-### Utilizing BERT QA structure
-The inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the [data construction process](#Data-construction) section).
 
 ## :bar_chart: Intrinsic evaluation results (UMLS tagging)
 The HRM's accuracy was **44.17%**.<br>
