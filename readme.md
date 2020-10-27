@@ -138,10 +138,12 @@ In this comparison we allow a difference in at most the first character (provide
    > לרמות הסוכר, רמות סוכר
 
    this step filtered **over 50%** of mismatches!
+   
+   <b>Step 4 results in "baseline train/test sets", containing about 1,400/150 examples, respectively (changes each run)</b>
  
  5) <u>**Data augmentation**</u><br>
  For the non-baseline model we expand the UMLS from the HRM to consider non-CUI terms and synthetically add them as examples for our BERT model (as described [here](#Problem-3-solution)). For each expanded term, we repeat steps 1 and 4.
-
+ <br><b>Step 5 results in "expanded train/test sets", containing about 4,000/800 examples, respectively (changes each run)</b>
 
 ### Output
 Final data output can be found [here](training_data/output_data/training_data_4.json) (different outputs are created depending on the chosen window size).
@@ -163,15 +165,50 @@ Instead of splitting the output of the [data construction process](#Data-constru
 About 12% of unique terms in the test set have been seen during training, however, since they appear in different contexts - it is important to test the model's answer to them.
 
 ## :bar_chart: Intrinsic evaluation results (UMLS tagging)
-The HRM's accuracy was **44.17%**.<br>
-MDTEL's F1-measure on Diabetes community was **73%**.
-<br><br>
-The following tables summarize our results for different versions of our model. Each version tested against both the baseline test set and the expanded one (containing new terms):
+### HRM results (baseline)
+
+- 22,677 total tokens (TP+FP+FN+TN)
+- 1,653 total manual annotations
+- 2,818 total tagged by HRM
+
+- 1,262 correctly tagged by HRM (TP)
+- 2,818-1,262 = 1,556 (FP)
+- 1,653-1,262 = 391 (FN, the terms that the HRM didn't tag)
+
+- Precision=TP/TP+FP=1,262/(1,262+1,556)
+- Recall=TP/TP+FN=1,262/(1,262+391)
+
+|  Precision  |     Recall    |  F1 measure  |
+|:-----------:|:-------------:|:------------:|
+|    44.17%   |    76.34%     |    55.96%    |
+
+### HRM results (expanded data)
+Since we perform data augmentation and add at least one more FP match for each HRM match, we expect to get lower precision but enhanced recall, with our model's goal being to fix the precision.
+
+- 8,454 total tagged by HRM + expansion
+
+- 1,536 correctly tagged by HRM + expansion (TP)
+- 8,454-1,536 = 6,918(FP)
+- 1,653-1,536 = 117 (FN)
+
+- Precision=TP/TP+FP=1,536/(1,536+6,918)
+- Recall=TP/TP+FN=1,262/(1,262+391)
+
+|  Precision  |     Recall    |  F1 measure  |
+|:-----------:|:-------------:|:------------:|
+|    18.17%   |     92.9%     |     30.4%    |
+
+### MDTEL's results
+reported F1-measure on Diabetes community was **73%**.
+
+### Our results
+The following tables summarize our results for different versions of our model, comparing our performance to the HRM.
+Each version tested against both the baseline test set and the expanded one (containing new terms):
 
 (*) note that 'WINDOW_SIZE' represents the chosen number of words from each side (left *and* right) to the term.
 
-### Baseline BERT (no HRM expansion in [step 5](#Data-construction))
-#### baseline test set
+#### Baseline BERT (no HRM expansion in [step 5](#Data-construction))
+##### baseline test set
 | WINDOW_SIZE |   Accuracy  |  Precision  |  Recall  | False negatives | False positives | True negatives | True positives |  F1 measure  |
 |:-----------:|:-----------:|:-----------:|:--------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
 |      2      |    92.9%    |    87.6%    |    96%   |        5        |        17       |       166      |       120      |     91.6%    |
@@ -179,7 +216,7 @@ The following tables summarize our results for different versions of our model. 
 |      4      |    82.8%    |    75.7%    |   84.8%  |        19       |        34       |       149      |       106      |     79.9%    |
 
 
-#### expanded test set
+##### expanded test set
 | WINDOW_SIZE |   Accuracy  |  Precision  |  Recall  | False negatives | False positives | True negatives | True positives |  F1 measure  |
 |:-----------:|:-----------:|:-----------:|:--------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
 |      2      |    38.3%    |    19.5%    |   95.8%  |        6        |        564      |       217      |       137      |     32.5%    |
@@ -187,7 +224,7 @@ The following tables summarize our results for different versions of our model. 
 |      4      |    35.5%    |    17.7%    |   86.7%  |       19        |        577      |       204      |       124      |     29.4%    |
 
 
-#### Inference example:<br>
+##### Inference example:<br>
 based on the context of the sentence, 'חולים' is not a medical term but part of a named location: 'קופות החולים'. The HRM's mistake is caught by the contextual relevance model:
 
 >המשלימים של קופות החולים המחיר גבוה יותר
@@ -198,9 +235,9 @@ UMLS classifier answer: Wrong
 Real answer: Wrong
 ```
 
-### BERT model w/ HRM expansion
+#### BERT model w/ HRM expansion
 
-#### baseline test set
+##### baseline test set
 
 | WINDOW_SIZE | Accuracy | Precision |  Recall  | False negatives | False positives | True negatives | True positives |  F1 measure  |
 |:-----------:|:--------:|:---------:|:--------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
@@ -208,7 +245,7 @@ Real answer: Wrong
 |      3      |    82%   |    77%    |    79%   |        26       |        29       |       154      |        99      |     78.3%    |
 |      4      |   85.7%  |   84.6%   |   79.2%  |        26       |        18       |       165      |        99      |     81.8%    |
 
-#### expanded test set
+##### expanded test set
 
 | WINDOW_SIZE | Accuracy | Precision |  Recall  | False negatives | False positives | True negatives | True positives |  F1 measure  |
 |:-----------:|:--------:|:---------:|:--------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
@@ -216,7 +253,7 @@ Real answer: Wrong
 |      3      |    92%   |   73.2%   |   76.2%  |        34       |        40       |       741      |       109      |     74.7%    |
 |      4      |   93.2%  |   78.6%   |    77%   |        33       |        30       |       751      |       110      |     77.7%    |
 
-#### Inference example:<br>
+##### Inference example:<br>
 'סוכר בדם' is a medical term tagged by the manual annotators but originally not tagged by the HRM. After synthetically adding more matches to the HRM, this term is now correctly identified by our model:
 
 >את רמת הסוכר בדם מסקנה לנסות
@@ -243,13 +280,9 @@ HRM match: חיסון
 UMLS classifier answer: Wrong
 ```
 
-## :bar_chart: Extrinsic evaluation results (information retrieval improvement)
-xxx
-
 ## :hammer: TODO 
 
 - [x] Augment HRM output with medical terms which have no corresponding CUI
-- [ ] Perform extrinsic evaluation.
 - [ ] Train for 2 other communities: Depression and Sclerosis.
 
 
