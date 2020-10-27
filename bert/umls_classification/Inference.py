@@ -29,11 +29,25 @@ estimator = tf.compat.v1.estimator.Estimator(model_fn, params={"batch_size": BAT
 tokenizer = create_tokenizer_from_hub_module(BERT_MODEL_HUB)
 
 
-_, test = ContextualRelevance(data_flie_path).get_data()
+_, test = ContextualRelevance(data_flie_path, False).get_data()
+
 data = list(zip(test[DATA_COLUMN].to_list(), test[ANSWER_COLUMN].to_list()))
+data[0] = list(data[0])
+data[0][0] = 'האם קיים דלקת מעיים חריפה שיכול לעזור לי'
+data[0][1] = 'דלקת מעיים חריפה'
+
+data[1] = list(data[1])
+data[1][0] = 'האם קיים חיסון לשפעת העופות שיכול לעזור לי'
+data[1][1] = 'העופות שיכול לעזור'
+
+data[2] = list(data[2])
+data[2][0] = 'האם קיים חיסון לשפעת העופות שיכול לעזור לי'
+data[2][1] = 'חיסון לשפעת העופות'
 
 predictions = get_prediction(data)
+
 for i, p in enumerate(predictions):
+    #if p[2] != test['Labels'][i]:
     print('sentence: ', p[0][0])
     print('HRM match:',  p[0][1])
     print('UMLS classifier answer:', 'Right' if p[2] else 'Wrong')

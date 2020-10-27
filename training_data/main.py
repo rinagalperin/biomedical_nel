@@ -1,12 +1,17 @@
 import os
 import pprint
 import re
+from collections import defaultdict
+from copy import deepcopy
+
 import numpy as np
 import pandas as pd
 import xlrd
 import json
 import openpyxl
 from sklearn.model_selection import train_test_split
+
+from bert.umls_classification.cfg import WINDOW_SIZES, COMMUNITIES
 
 global_annotations = [0]
 
@@ -22,22 +27,35 @@ def read_annotations_data(annotations_data_path):
 
 
 def get_associations_idx(loc_hrm, loc_ann_list):
-    """Returns the closest offset and the absolute distance from the tagged terms (in the corresponding post)
-    from the manual annotations"""
+    """
+    Returns the closest offset and the absolute distance from the tagged terms (in the corresponding post)
+    from the manual annotations
+    """
 
     distance = np.abs(loc_hrm - np.array(loc_ann_list))
     return loc_ann_list[np.argmin(distance)], np.min(distance)
 
 
 def get_windows_and_labels_from_data(hrm_df_data, annotations_data, window_size):
+    # baseline output
+    windows_baseline = []
+    hrm_umls_baseline = []
+    annotations_umls_baseline = []
+    labels_baseline = []
+
+    # HRM with expansion output
     windows = []
     hrm_umls = []
     annotations_umls = []
     labels = []
+    is_expanded_term = []
 
     annotations_data = annotations_data.to_dict()
     posts_dict = get_posts_dict(annotations_data)
+
     posts_seen = {}
+    expansion_was_needed = 0
+    garbage_windows_max = 1000
 
     # for each entry in the data (post), we go over the matches found
     for i in hrm_df_data['matches_found'].index:
@@ -47,7 +65,7 @@ def get_windows_and_labels_from_data(hrm_df_data, annotations_data, window_size)
 
         # avoid going over duplicate posts
         if tokenized_txt not in list(posts_seen.keys()):
-            posts_seen[tokenized_txt] = 1
+            posts_seen[tokenized_txt] = tokenized_txt
 
             match_entry = hrm_df_data['matches_found'][i]
             match_entry_json = json.loads(match_entry)
@@ -68,6 +86,7 @@ def get_windows_and_labels_from_data(hrm_df_data, annotations_data, window_size)
                                                   window_size=window_size,
                                                   pad=False)
                 windows.append(window)
+                is_expanded_term.append(0)
 
                 # (2) UMLS from high recall matcher
                 umls = cand_match['umls_match']
@@ -87,37 +106,88 @@ def get_windows_and_labels_from_data(hrm_df_data, annotations_data, window_size)
                 annotations_umls.append(umls2)
 
                 # (4) ground-truth label (comparison of the HRM UMLS to the manual annotations UMLS)
-                labels.append(1 if umls == umls2 or compare_expressions(candidate, umls2) else 0)
+                label = 1 if umls == umls2 or compare_expressions(candidate, umls2) else 0
+                labels.append(label)
+
+                # baseline oputput is collected up until step 5, without performing the expansion
+                windows_baseline.append(window)
+                hrm_umls_baseline.append(umls)
+                annotations_umls_baseline.append(umls2)
+                labels_baseline.append(label)
 
                 # (5) final step: expand HRM results by adding terms that have no CUI
-                # i.e. - don't have a CUI
+                # (5.1) we try to expand the umls itself by adding 1 or 2 words to it
                 expansion_sizes = [1, 2]
+                to_add = False  # should we add the window to the result set or not?
                 for expansion_size in expansion_sizes:
                     expanded_term = expand_term(post_txt=post_txt,
                                                 start_word_offset=word_offset,
                                                 end_word_offset=word_offset + word_count - 1,
                                                 expansion_size=expansion_size)
-                    expanded_term_window = get_window_for_candidate(post_txt=post_txt,
-                                                                    start_word_offset=word_offset,
-                                                                    end_word_offset=word_offset + expansion_size,
-                                                                    window_size=window_size,
-                                                                    pad=False)
 
-                    windows.append(expanded_term_window)
-                    hrm_umls.append(expanded_term)
-                    annotations_umls.append(umls2)
-                    labels.append(1 if expanded_term == umls2 or compare_expressions(expanded_term, umls2) else 0)
+                    label = 1 if expanded_term == umls2 or compare_expressions(expanded_term, umls2) else 0
+                    to_add = label == 1 or to_add
+                    if label:
+                        expansion_was_needed += 1
 
-    return {'windows': windows,
+                # (5.2) we open a window around the expanded term
+                for expansion_size in expansion_sizes:
+                    expanded_term = expand_term(post_txt=post_txt,
+                                                start_word_offset=word_offset,
+                                                end_word_offset=word_offset + word_count - 1,
+                                                expansion_size=expansion_size)
+
+                    # expanded_term_window = get_window_for_candidate(post_txt=post_txt,
+                    #                                                 start_word_offset=word_offset,
+                    #                                                 end_word_offset=word_offset + word_count - 1 + expansion_size,
+                    #                                                 window_size=window_size,
+                    #                                                 pad=False)
+
+                    label = 1 if expanded_term == umls2 or compare_expressions(expanded_term, umls2) else 0
+
+                    # (5.3) if the expanded term matches the annotations umls (i.e. - label = 1), then we add it to the result
+                    if to_add:
+                        is_expanded_term.append(1)
+
+                        labels.append(label)
+                        windows.append(window)  # we use the original window and simply change the term and label
+                        hrm_umls.append(expanded_term)
+                        annotations_umls.append(umls2)
+
+                    # otherwise, we want to monitor the number of 'garbage' windows we add to the result data so that
+                    # it doesn't outweigh the number of successful expansions
+                    elif garbage_windows_max:
+                        is_expanded_term.append(1)
+                        garbage_windows_max -= 1
+
+                        labels.append(label)
+                        windows.append(window)
+                        hrm_umls.append(expanded_term)
+                        annotations_umls.append(umls2)
+
+    #print(len(windows_baseline))
+    #print('--------------------------')
+    return {'windows': windows_baseline,
+            'HRM_UMLS': hrm_umls_baseline,
+            'Annotations_UMLS': annotations_umls_baseline,
+            'Labels': labels_baseline}, \
+           {'windows': windows,
             'HRM_UMLS': hrm_umls,
             'Annotations_UMLS': annotations_umls,
-            'Labels': labels}
+            'Labels': labels,
+            'Is_Expanded_Term': is_expanded_term}
 
 
 def compare_expressions(exp1, exp2):
-    """compares 2 string expressions and returns True if the two differ in at most the first character for any one
-    of the expression's words.
-    e.g. - חולה הסכרת vs. לחולה סכרת will return True"""
+    """
+    compares 2 string expressions and returns 'True' if the two differ in at most the first character for any one
+    of the expression's words, provided that the character is a functional character in Hebrew.
+    e.g. - חולה הסכרת vs. לחולה סכרת --> will return True since the expressions differ only in the first functional
+    letter 'ל'
+    """
+
+    functional_characters = ['ב', 'ל', 'כ', 'ו', 'ה', 'ש', 'מ']
+
     if exp1 is None or exp2 is None:
         return False
 
@@ -131,59 +201,19 @@ def compare_expressions(exp1, exp2):
         ans = True
         for i, word in enumerate(exp1_words):
             word2 = exp2_words[i]
-            ans = ans and (word == word2 or word[1:] == word2 or word == word2[1:])
+            ans = ans and (word == word2 or (word[1:] == word2 and word[0] in functional_characters) or (
+                    word == word2[1:] and word2[0] in functional_characters))
         return ans
+    # the expressions don't have the same number of words
     else:
         return False
 
 
-def fix_manual_annotations(data, hrm_cui, window, umls, annotations_data, umls_data, cand_match):
-    umls2, post_num, annotation_id = data
-    annotations_cui = get_cui_from_word(umls2, umls_data)
-
-    # if there is no CUI for the annotations' match, then we want to choose the HRM CUI instead, meaning label as 1 (HRM 'got it right')
-    if annotations_cui is None and not compare_expressions(cand_match, umls2):
-        global_annotations[0] += 1
-        print(str(post_num))
-        print(str(window) +
-              '\n' +
-              'hrm_cand_match: ' +
-              str(cand_match) +
-              ', ' +
-              str(hrm_cui) +
-              ', ' +
-              str(umls) +
-              ', annotations UMLS that was not found: ' +
-              str(umls2))
-        # 1 if the HRM got it right, otherwise 0
-        val = 0  # input("is recall matcher right: ")
-
-        if val == '1':
-            # we update the annotations
-            annotations_data['merged_inner_and_outer'][post_num][annotation_id]['term'] = str(umls)
-            # save to file
-            with open('output_data/corrected_annotations_temp.json', 'w', encoding='utf-8') as data_file:
-                json.dump(annotations_data, data_file, ensure_ascii=False, indent=4)
-            print('saved to file...')
-
-        print('\n\n')
-
-
-def print_windows(windows, hrm_umls, annotations_umls):
-    for i, item in enumerate(windows):
-        print('window ' + str(i) + ': ' + str(item) +
-              '\n' +
-              'High recall matcher UMLS: ' + str(hrm_umls[i]) +
-              '\n' +
-              'Annotations UMLS: ' +
-              str(annotations_umls[i]) + '\n')
-    print('training data size: ' + str(len(windows)))
-
-
 def get_posts_dict(annotations_data):
-    """Returns a dictionary from each post to a dictionary that maps the offset of the matches found in the post
-    to the terms themselves"""
-
+    """
+    Returns a dictionary from each post to a dictionary that maps the offset of the matches found in the post
+    to the terms themselves, post number and annotation id.
+    """
     posts_dict = {}
 
     for post_num in range(len(annotations_data['merged_inner_and_outer'])):
@@ -194,6 +224,7 @@ def get_posts_dict(annotations_data):
         offset_to_term_dict = {}
         for ann_id, term_json in enumerate(annotations_data['merged_inner_and_outer'][post_num]):
             offset_to_term_dict[term_json['start_offset']] = [term_json['term'], post_num, ann_id]
+
         posts_dict[post_txt] = offset_to_term_dict
 
     return posts_dict
@@ -204,16 +235,10 @@ def get_cui_from_word(candidate, umls_data):
     return umls_data.loc[results_idx[0]]['CUI'] if len(results_idx) else None
 
 
-def get_word_from_offset(sentence, offset):
-    ans = ''
-    while 0 <= offset < len(sentence) and sentence[offset] != ' ':
-        ans += sentence[offset]
-        offset += 1
-    return ans
-
-
 def get_match_word_offset(char_offset, row):
-    """Returns the word offset based on the input char offset"""
+    """
+    Returns the word offset based on the input char offset
+    """
     word_offset = 0
     while char_offset > 0:
         if row[char_offset] == ' ':
@@ -288,47 +313,42 @@ def get_window_for_candidate(post_txt, start_word_offset, end_word_offset, windo
     return ' '.join(ans)
 
 
-def google_counts(query):
-    import requests
-    from bs4 import BeautifulSoup
-
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"}
-    URL = 'https://www.google.com/search?q="{}"'.format(query)
-    result = requests.get(URL, headers=headers)
-
-    soup = BeautifulSoup(result.content, 'html.parser')
-    print(result.text)
-    total_results_text = soup.find("div", {"id": "result-stats"}).find(text=True,
-                                                                       recursive=False)  # this will give you the outer text which is like 'About 1,410,000,000 results'
-    results_num = ''.join([num for num in total_results_text if
-                           num.isdigit()])  # now will clean it up and remove all the characters that are not a number .
-    return int(results_num)
-
-
 def main():
     # data paths
     data_dir = r"C:\Users\Rins\Desktop\data" + os.sep
-    annotations_data_path = data_dir + r'manual_labeled_v2\doccano\merged_output\diabetes_labels.csv'
-    # annotations_data_path = 'output_data/corrected_annotations.json'
-    high_recall_matcher__path = data_dir + r'high_recall_matcher\output\diabetes.csv'
 
-    # data sources
-    high_recall_matcher_output = read_high_recall_matcher_output(high_recall_matcher__path)
-    annotations_data = read_annotations_data(annotations_data_path)
+    for community in COMMUNITIES:
+        annotations_data_path = data_dir + r'manual_labeled_v2\doccano\merged_output\{}_labels.csv'.format(community)
+        high_recall_matcher__path = data_dir + r'high_recall_matcher\output\{}.csv'.format(community)
 
-    window_size = 2
-    train, test = train_test_split(high_recall_matcher_output, test_size=0.1)
-    train = get_windows_and_labels_from_data(train, annotations_data, window_size)
-    test = get_windows_and_labels_from_data(test, annotations_data, window_size)
+        # data sources
+        high_recall_matcher_output = read_high_recall_matcher_output(high_recall_matcher__path)
+        annotations_data = read_annotations_data(annotations_data_path)
 
-    data = {'train': train, 'test': test}
-    # save the data to file
-    with open('output_data/training_data_{}.json'.format(window_size), 'w', encoding='utf-8') as data_file:
-        json.dump(data,
-                  data_file,
-                  ensure_ascii=False,
-                  indent=4)
+        # split HRM output (posts) to be used as input for constructing the train and test sets
+        train_data, test_data = train_test_split(high_recall_matcher_output, test_size=0.1)
+
+        # construct train and test sets for each window, using the split above as input
+        for window_size in WINDOW_SIZES:
+            print('\n\n')
+            print(str(community), str(window_size))
+
+            train_baseline, train = get_windows_and_labels_from_data(train_data, annotations_data, window_size)
+            test_baseline, test = get_windows_and_labels_from_data(test_data, annotations_data, window_size)
+
+            data = {'baseline': {'train': train_baseline, 'test': test_baseline},  # baseline train and test sets
+                    'data': {'train': train, 'test': test}}  # expanded train and test sets
+
+            print(np.sum(train['Labels']))
+            print(np.sum(test['Labels']))
+            print(len(train['Labels']))
+            print(len(test['Labels']))
+            # save the output to file
+            with open('training_data_{}_{}.json'.format(community, window_size), 'w', encoding='utf-8') as data_file:
+                json.dump(data,
+                          data_file,
+                          ensure_ascii=False,
+                          indent=4)
 
 
 if __name__ == '__main__':
