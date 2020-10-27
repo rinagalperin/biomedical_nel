@@ -152,8 +152,8 @@ Final data output can be found [here](training_data/output_data/training_data_4.
 BERT, or Bidirectional Encoder Representations from Transformers, is a new method of pre-training language representations which obtains state-of-the-art results on a wide array of Natural Language Processing (NLP) tasks.
 Pre-training BERT is fairly expensive but it is a one-time procedure for each language so we can utilize Google's multilingual BERT and avoid training our own model from scratch.
 
- The multilingual BERT model was pre-trained on the top 100 languages with the largest Wikipedias. The entire Wikipedia dump for each language (excluding user and talk pages) was taken as the training data for each language.
-
+ The multilingual BERT model was pre-trained on the top 100 languages with the largest Wikipedias. The entire Wikipedia dump for each language (excluding user and talk pages) was taken as the training data for each language. The model was evaluated using the XNLI dataset which is a version of MultiNLI where the dev and test sets have been translated (by humans) into 15 languages. Although Hebrew was not one of the tested languages, the model performed well on the reported languages (the model was trained on machine-translated data from English into the foreign language and still out-performed the baseline) which provides decent intuition on its capabilities in Hebrew.
+ 
 BERT can be adapted to many types of NLP tasks very easily with an inexpensive fine-tuning process that provides state-of-the-art results on sentence-level (e.g., SST-2), sentence-pair-level (e.g., MultiNLI), word-level (e.g., NER), and span-level (e.g., SQuAD) tasks with almost no task-specific modifications.
 
  We chose to utilize BERT's QA structure for fine tuning where the inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to use this structure to check if the HRM UMLS (i.e. - **Question**) fits the context of the term (i.e. - **Context**), where the manual annotations define the ground-truth label (i.e. - **Answer** = labels retrieved from step 4 in the [data construction process](#Data-construction) section).
