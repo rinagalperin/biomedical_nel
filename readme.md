@@ -149,8 +149,12 @@ Final data output can be found [here](training_data/output_data/training_data_4.
 ### BERT model
 BERT, or Bidirectional Encoder Representations from Transformers, is a new method of pre-training language representations which obtains state-of-the-art results on a wide array of Natural Language Processing (NLP) tasks.
 Pre-training BERT is fairly expensive but it is a one-time procedure for each language so we can utilize Google's multilingual BERT and avoid training our own model from scratch.
-The multilingual BERT model was pre-trained on the top 100 languages with the largest Wikipedias. The entire Wikipedia dump for each language (excluding user and talk pages) was taken as the training data for each language.
-Fine-tuning BERT is inexpensive, we chsoe to utilize BERT's QA structure where the inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to utilize this structure to check if the HRM UMLS (**Question**) fits the context of the term (**Context**), where the manual annotations define the ground-truth label (**Answer** = labels from step 4 in the [data construction process](#Data-construction) section).
+
+ The multilingual BERT model was pre-trained on the top 100 languages with the largest Wikipedias. The entire Wikipedia dump for each language (excluding user and talk pages) was taken as the training data for each language.
+
+BERT can be adapted to many types of NLP tasks very easily with an inexpensive fine-tuning process that provides state-of-the-art results on sentence-level (e.g., SST-2), sentence-pair-level (e.g., MultiNLI), word-level (e.g., NER), and span-level (e.g., SQuAD) tasks with almost no task-specific modifications.
+
+ We chose to utilize BERT's QA structure for fine tuning where the inputs come in the form of a **Context** / **Question** pair, and the outputs are **Answers**. We decided to use this structure to check if the HRM UMLS (i.e. - **Question**) fits the context of the term (i.e. - **Context**), where the manual annotations define the ground-truth label (i.e. - **Answer** = labels retrieved from step 4 in the [data construction process](#Data-construction) section).
 
 ## :microscope: Testing and evaluation
 ### Data
