@@ -8,7 +8,7 @@ from bert.dataloader.aclimdb import aclImdb
 from bert.utilty.utilty import create_tokenizer_from_hub_module, model_fn_builder
 tf.compat.v1.disable_v2_behavior()
 
-
+0
 def run_train(data_file_path, output_dir, is_baseline):
     print('***** Model output directory: {} *****'.format(output_dir))
 
@@ -68,7 +68,8 @@ def run_train(data_file_path, output_dir, is_baseline):
 def main():
     for community in COMMUNITIES:
         for window in WINDOW_SIZES:
-            data_flie_path = '../../training_data/training_data_{}_{}.json'.format(community, window)
+            #training_data/json_files/contextual_relevance/training_data_diabetes_2_old.json
+            data_flie_path = '../../training_data/json_files/contextual_relevance/training_data_{}_{}.json'.format(community, window)
             baseline_output_dir = 'E:/nlp_model/output_model_baseline_{}_{}'.format(community, window)  # @param {type:"string"}
             output_dir = 'E:/nlp_model/output_model_{}_{}'.format(community, window)  # @param {type:"string"}
 

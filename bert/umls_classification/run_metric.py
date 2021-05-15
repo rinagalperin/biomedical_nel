@@ -38,11 +38,14 @@ def run(checkpoint_path, data_flie_path, is_baseline_data):
         bert_model_hub=BERT_MODEL_HUB)
 
     estimator = tf.compat.v1.estimator.Estimator(model_fn, params={"batch_size": BATCH_SIZE})
-    tokenizer = create_tokenizer_from_hub_module(BERT_MODEL_HUB)
-
+    miss_ann = 50 if is_baseline_data else 9
     metric_result = estimator.evaluate(input_fn=test_input_fn, steps=None, checkpoint_path=checkpoint_path)
+    metric_result['false_negatives'] += miss_ann
+    metric_result['recall'] = metric_result['true_positives'] / (metric_result['true_positives'] + metric_result['false_negatives'])
+    metric_result['eval_accuracy'] = (metric_result['true_positives'] + metric_result['true_negatives']) / (metric_result['true_positives'] + metric_result['false_negatives'] + metric_result['true_negatives'] + metric_result['false_positives'])
     precision = metric_result['precision']
     recall = metric_result['recall']
+
     metric_result['F1'] = 2 * (precision * recall) / (precision + recall)
     return metric_result
 
@@ -52,15 +55,15 @@ def main():
     for window_size in WINDOW_SIZES:
         for is_baseline in [True, False]:
             community = 'diabetes'
-            data_flie_path = '../../training_data/training_data_{}_{}.json'.format(community, window_size)
+            data_flie_path = '../../training_data/json_files/contextual_relevance/training_data_{}_{}.json'.format(community, window_size)
 
             if is_baseline:
-                model_checkpoint = 379
+                model_checkpoint = 2946
                 checkpoint_path = 'E:/nlp_model/output_model_baseline_{}_{}/model.ckpt-{}'.format(community,
                                                                                                   window_size,
                                                                                                   model_checkpoint)
             else:
-                model_checkpoint = 605
+                model_checkpoint = 3098
                 checkpoint_path = 'E:/nlp_model/output_model_{}_{}/model.ckpt-{}'.format(community, window_size,
                                                                                          model_checkpoint)
 
