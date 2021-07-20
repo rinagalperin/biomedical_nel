@@ -12,7 +12,7 @@ easier and more accurate. UMLS concepts are mostly labeled in English, therefore
 ## :bulb: Approach
 Our proposed end-to-end NEL model consists of four consecutive stages: (1)  **multilingual UMLS mapping**; generate a list $U_L$ of medical concepts in language $L$ mapped to universal CUIs from $C$, (2) **candidate generation**; consider all spans as candidate mentions and compute vector representations for both mentions and concepts, (3) **high recall matching**; use a semantic similarity based score function to generate the top matching entities with high recall being the priority and (4) **contextual relevance modeling**; embed each candidate span in its context, defined by the tokens surrounding it in the original text, alongside the label of whether or not the given mention is a medical concept in this context. This is used as an input to the BERT model fine-tuning.
 
-![alt text](http://url/to/pipeline.png)
+![Alt text](pipeline.jpg?raw=true "Full pipeline overview")
 
 ## :bar_chart: Results
 - Camoni corpus ([MDTEL](https://github.com/yonatanbitton/mdtel))
