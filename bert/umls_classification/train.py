@@ -4,16 +4,15 @@ from datetime import datetime
 from bert.dataloader.contextual_relevance import ContextualRelevance
 from bert.umls_classification.cfg import *
 from bert.bert_code import run_classifier
-from bert.dataloader.aclimdb import aclImdb
 from bert.utilty.utilty import create_tokenizer_from_hub_module, model_fn_builder
 tf.compat.v1.disable_v2_behavior()
 
-0
-def run_train(data_file_path, output_dir, is_baseline):
+
+def run_train(data_file_path, output_dir):
     print('***** Model output directory: {} *****'.format(output_dir))
 
     # get data from data loader
-    train, _ = ContextualRelevance(data_file_path, is_baseline).get_data()
+    train, _, _ = ContextualRelevance(data_file_path).get_data()
     print(train.columns)
 
     # Use the InputExample class from BERT's run_classifier code to create examples from the data
@@ -25,7 +24,7 @@ def run_train(data_file_path, output_dir, is_baseline):
 
     # get bert_code tokenizer form hub model
     tokenizer = create_tokenizer_from_hub_module(BERT_MODEL_HUB, False)
-    print(tokenizer.tokenize("שלום אנחנו רינה ושחר"))
+    print(tokenizer.tokenize("מריצים אימון..."))
 
     # Convert our train and test features to InputFeatures that BERT understands.
     train_features = run_classifier.convert_examples_to_features(train_InputExamples, label_list, MAX_SEQ_LENGTH, tokenizer)
@@ -61,20 +60,15 @@ def run_train(data_file_path, output_dir, is_baseline):
 
     print('Beginning Training!')
     current_time = datetime.now()
+
     estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)
     print("Training took time ", datetime.now() - current_time)
 
 
 def main():
-    for community in COMMUNITIES:
-        for window in WINDOW_SIZES:
-            #training_data/json_files/contextual_relevance/training_data_diabetes_2_old.json
-            data_flie_path = '../../training_data/json_files/contextual_relevance/training_data_{}_{}.json'.format(community, window)
-            baseline_output_dir = 'E:/nlp_model/output_model_baseline_{}_{}'.format(community, window)  # @param {type:"string"}
-            output_dir = 'E:/nlp_model/output_model_{}_{}'.format(community, window)  # @param {type:"string"}
-
-            run_train(data_flie_path, baseline_output_dir, is_baseline=True)
-            run_train(data_flie_path, output_dir, is_baseline=False)
+    data_flie_path = '../../training_data/json_files/contextual_relevance/eng/medmentions_1.json'
+    output_dir = 'E:/nlp_model/output_model_medmentions_1'
+    run_train(data_flie_path, output_dir)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,3 @@
-import gzip
-
-
 # PubMentions format (source: https://github.com/chanzuckerberg/MedMentions)
 # PMID | t | Title text
 # PMID | a | Abstract text
@@ -15,20 +12,39 @@ import gzip
 # SemanticTypeID: id for the Semantic Type that entity is linked to in UMLS (T047, T116, T123, etc.)
 # EntityID: the CUI, UMLS entity (concept) id
 
-def get_post_annotation(line):
+# corpus statistics: https://github.com/chanzuckerberg/MedMentions/tree/master/full
+import json
+import gzip
+
+from training_data.utils import read_dict_from_json_file, clean_text
+
+failed = [0]
+total_annotated_cuis = [0]
+
+
+def get_post_annotation(line, cui_to_umls_dict):
     # line example: ['25763772', '0', '5', 'DCTN4', 'T116,T123', 'C4308010\n']
     line_arr = line.split('\t')
     start_offset = line_arr[1]
     end_offset = line_arr[2]
     cui = line_arr[5].split('\n')[0]
+    umls = ''
 
-    return {'term': cui,
+    try:
+        umls = cui_to_umls_dict[cui][0]
+    except:
+        failed[0] += 1
+        pass
+
+    total_annotated_cuis[0] += 1
+
+    return {'term': umls,
             'start_offset': start_offset,
             'end_offset': end_offset,
             'label': 0}  # example: label = "Chemical or drug"
 
 
-def med_mentions_reader(contents):
+def med_mentions_reader(contents, cui_to_umls_dict):
     data = {'text': [], 'tokenized_text': [], 'file_name': [], 'merged_inner_and_outer': []}
 
     curr_post_num = 0
@@ -44,7 +60,7 @@ def med_mentions_reader(contents):
         document_text = title + ' ' + abstract  # concatenating the Title and Abstract, separated by a SPACE character
 
         data['text'].append(document_text)
-        data['tokenized_text'].append(document_text)
+        data['tokenized_text'].append(clean_text(document_text))
         data['file_name'].append(curr_post_num)
 
         curr_line_num += 2
@@ -53,8 +69,9 @@ def med_mentions_reader(contents):
         curr_line = contents[curr_line_num].decode("utf-8")
         curr_line_pmid = str(curr_line).split('\t')[0]
         while curr_line_pmid == pmid:
-            post_annotation = get_post_annotation(curr_line)
-            annotations.append(post_annotation)
+            post_annotation = get_post_annotation(curr_line, cui_to_umls_dict)
+            if post_annotation['term'] != '':
+                annotations.append(post_annotation)
             curr_line_num += 1
             next_line_raw = contents[curr_line_num]
             if next_line_raw and next_line_raw.decode("utf-8") != '\n':
@@ -71,11 +88,21 @@ def med_mentions_reader(contents):
     return data
 
 
-a_file = gzip.open("data/corpus_pubtator.txt.gz", "rb")
-contents = a_file.readlines()
+medmentions_data_file = gzip.open("data/medmentions/corpus_pubtator.txt.gz", "rb")
+contents = medmentions_data_file.readlines()
 
-# output format (keys):
-# ['text', 'tokenized_text', 'file_name', 'merged_inner_and_outer']
-med_mentions_data = med_mentions_reader(contents)
+#cui_to_umls_dict_file_path = 'data/cui_to_umls.json'
+#file_name = '../training_data/json_files/annotations_data/med_mentions_annotations_data'
 
-print(med_mentions_data)
+cui_to_umls_dict_file_path = 'C:/Users/Rins/Downloads/UMLSParser-master/UMLSParser-master/umlsparser/cui_to_umls.json'
+file_name = 'E:/nlp_model/hrm/medmentions/med_mentions_annotations_data'
+
+cui_to_umls_dict_from_file = read_dict_from_json_file(cui_to_umls_dict_file_path)
+med_mentions_data = med_mentions_reader(contents, cui_to_umls_dict_from_file)
+
+print(failed[0], 'annotated CUIs not found. Overall found: ', total_annotated_cuis[0]-failed[0])
+with open(file_name, mode='w', encoding='utf-8') as data_file:
+    json.dump(med_mentions_data,
+              data_file,
+              ensure_ascii=False,
+              indent=4)

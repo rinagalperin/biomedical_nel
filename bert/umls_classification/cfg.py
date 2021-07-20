@@ -2,20 +2,16 @@ DATA_COLUMN = 'windows'
 ANSWER_COLUMN = 'HRM_UMLS'
 LABEL_COLUMN = 'Labels'
 WINDOW_SIZES = [2]
-# COMMUNITIES = ['diabetes', 'sclerosis', 'depression']
 COMMUNITIES = ['diabetes']
 
-# manually change the following parameters to perform inference or to run metrics on a specific model:
+# manually change the following parameters to perform inference
 is_baseline = False
 community = 'diabetes'
 model_checkpoint = 7844
 WINDOW_SIZE = 2
 
 data_flie_path = '../../training_data/training_data_{}_{}.json'.format(community, WINDOW_SIZE)
-checkpoint_path = \
-    'E:/nlp_model/output_model_baseline_{}_{}/model.ckpt-{}'.format(community, WINDOW_SIZE, model_checkpoint) \
-    if is_baseline \
-    else 'E:/nlp_model/output_model_{}_{}/model.ckpt-{}'.format(community, WINDOW_SIZE, model_checkpoint)
+checkpoint_path = 'E:/nlp_model/output_model_{}_{}/model.ckpt-{}'.format(community, WINDOW_SIZE, model_checkpoint)
 
 # label classes:
 label_list = [0, 1]

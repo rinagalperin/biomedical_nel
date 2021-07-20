@@ -1,19 +1,15 @@
-# Run metric
 import pprint
+import tensorflow as tf
 
 from bert.bert_code import run_classifier
 from bert.dataloader.contextual_relevance import ContextualRelevance
 from bert.umls_classification.cfg import *
 from bert.utilty.utilty import create_tokenizer_from_hub_module, model_fn_builder
-import tensorflow as tf
 
 
-def run(checkpoint_path, data_flie_path, is_baseline_data):
+def run(checkpoint_path, data_flie_path):
     # get model (make sure to change checkpoint according to the model in the configurations file)
-    _, test = ContextualRelevance(data_flie_path, is_baseline=is_baseline_data).get_data()
-    #if not is_baseline_data:
-        #test = test[test.Is_Expanded_Term == 1]
-
+    _, test, false_negatives_test_set = ContextualRelevance(data_flie_path).get_data()
     # get bert_code tokenizer form hub model
     tokenizer = create_tokenizer_from_hub_module(BERT_MODEL_HUB)
 
@@ -38,9 +34,8 @@ def run(checkpoint_path, data_flie_path, is_baseline_data):
         bert_model_hub=BERT_MODEL_HUB)
 
     estimator = tf.compat.v1.estimator.Estimator(model_fn, params={"batch_size": BATCH_SIZE})
-    miss_ann = 50 if is_baseline_data else 9
     metric_result = estimator.evaluate(input_fn=test_input_fn, steps=None, checkpoint_path=checkpoint_path)
-    metric_result['false_negatives'] += miss_ann
+    metric_result['false_negatives'] += false_negatives_test_set
     metric_result['recall'] = metric_result['true_positives'] / (metric_result['true_positives'] + metric_result['false_negatives'])
     metric_result['eval_accuracy'] = (metric_result['true_positives'] + metric_result['true_negatives']) / (metric_result['true_positives'] + metric_result['false_negatives'] + metric_result['true_negatives'] + metric_result['false_positives'])
     precision = metric_result['precision']
@@ -51,30 +46,12 @@ def run(checkpoint_path, data_flie_path, is_baseline_data):
 
 
 def main():
-    metrics = {}
-    for window_size in WINDOW_SIZES:
-        for is_baseline in [True, False]:
-            community = 'diabetes'
-            data_flie_path = '../../training_data/json_files/contextual_relevance/training_data_{}_{}.json'.format(community, window_size)
+    model_checkpoint = 1299
+    data_flie_path = '../../training_data/json_files/contextual_relevance/eng/medmentions_1.json'
+    checkpoint_path = 'E:/nlp_model/output_model_medmentions_1/model.ckpt-{}'.format(model_checkpoint)
 
-            if is_baseline:
-                model_checkpoint = 2946
-                checkpoint_path = 'E:/nlp_model/output_model_baseline_{}_{}/model.ckpt-{}'.format(community,
-                                                                                                  window_size,
-                                                                                                  model_checkpoint)
-            else:
-                model_checkpoint = 3098
-                checkpoint_path = 'E:/nlp_model/output_model_{}_{}/model.ckpt-{}'.format(community, window_size,
-                                                                                         model_checkpoint)
+    metrics = run(checkpoint_path, data_flie_path)
 
-            metrics[window_size] = metrics.get(window_size, {})
-            metrics[window_size]['baseline model' if is_baseline else 'expanded model'] = {
-                'baseline_data': run(checkpoint_path, data_flie_path, True),
-                'expanded_data': run(checkpoint_path, data_flie_path, False)}
-
-
-        #print(metrics[window_size])
-    #print(metrics)
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(metrics)
 
