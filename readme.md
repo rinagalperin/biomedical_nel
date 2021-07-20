@@ -16,6 +16,7 @@ Our proposed end-to-end NEL model consists of four consecutive stages: (1)  **mu
 
 ## :bar_chart: Results
 - Camoni corpus ([MDTEL](https://github.com/yonatanbitton/mdtel))
+- 
 | WINDOW_SIZE |   Accuracy  |  Precision  |   Recall   | False negatives | False positives | True negatives | True positives |  F1 measure  |
 |:-----------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
 |      2      |     91.2%   |     67.5%   |    85.6%   |        27       |        77       |       912      |       160      |     75.5%    |
@@ -24,6 +25,7 @@ Our proposed end-to-end NEL model consists of four consecutive stages: (1)  **mu
 
 
 - MedMentions
+
 | WINDOW_SIZE |   Accuracy  |  Precision  |   Recall   | False negatives | False positives | True negatives | True positives |  F1 measure  |
 |:-----------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
 |      2      |     91.2%   |     67.5%   |    85.6%   |        27       |        77       |       912      |       160      |     75.5%    |
@@ -32,6 +34,7 @@ Our proposed end-to-end NEL model consists of four consecutive stages: (1)  **mu
 
 
 - BC5CDR
+
 | WINDOW_SIZE |   Accuracy  |  Precision  |   Recall   | False negatives | False positives | True negatives | True positives |  F1 measure  |
 |:-----------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
 |      2      |     91.2%   |     67.5%   |    85.6%   |        27       |        77       |       912      |       160      |     75.5%    |
