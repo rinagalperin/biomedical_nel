@@ -17,22 +17,14 @@ Our proposed end-to-end NEL model consists of four consecutive stages: (1)  **mu
 ## :bar_chart: Results
 - Camoni corpus ([MDTEL](https://github.com/yonatanbitton/mdtel))
 
-|       Model |   Community |  Accuracy   | Precision  |   Recall        |  F1 measure     |
+|       Model |   Community |  Accuracy%  | Precision% |   Recall%       |  F1 measure%    |
 |:-----------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|
-|  MDTEL      |     91.2%   |     67.5%   |    85.6%   |        27       |        77       |
-|*Our model*  |     89.7%   |     62.8%   |    86.6%   |        25       |        96       |<hr>
-|      4      |     89.5%   |     62.3%   |    85.6%   |        27       |        97       |
-
-\thead{Model} & \thead{Community} &\thead{Accuracy \%}&\thead{Precision \%} &\thead{Recall \%} & \thead{F-score \%} \\
-\midrule
-\cite{bitton2020} & Diabetes  & \textbf{97.0} & 71.0 & \textbf{75.0} & 73.0\\
-\textit{Our model} & Diabetes   & 89.2 & \textbf{98.3} & 73.8 & \textbf{84.3}\\
-\greyrule
-\cite{bitton2020} & Depression  & \textbf{99.0} & 77.0 & 73.0 & 75.0\\
-\textit{Our model} & Depression   & 90.8 & \textbf{97.7} & \textbf{76.9} & \textbf{86.0}\\
-\greyrule
-\cite{bitton2020} & Sclerosis & \textbf{98.0} & 82.0 & \textbf{71.0} & 76.0\\
-\textit{Our model} & Sclerosis   & 86.3 & \textbf{98.3} & 67.8 & \textbf{80.3}\\
+|  MDTEL      |  Diabetes   |  **97.0**   |    71.0    |  **75.0**       |    73.0         |
+|*Our model*  |  Diabetes   |    89.2     |  **98.3**  |    73.8         |    **84.3**     |
+|  MDTEL      | Depression  |  **99.0**   |   77.0     |    73.0         |    75.0         |
+|*Our model*  | Depression  |   90.8      |   97.7     |  **76.9**       |    **86.0**     |
+|  MDTEL      | Sclerosis   |  **98.0**   |   82.0     |  **71.0**       |    76.0         |
+|*Our model*  | Sclerosis   |   86.3      | **98.3**   |    67.8         |    **80.3**     |
 
 - MedMentions
 
