@@ -26,20 +26,32 @@ Our proposed end-to-end NEL model consists of four consecutive stages: (1)  **mu
 
 - MedMentions
 
-| WINDOW_SIZE |   Accuracy  |  Precision  |   Recall   | False negatives | False positives | True negatives | True positives |  F1 measure  |
-|:-----------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
-|      2      |     91.2%   |     67.5%   |    85.6%   |        27       |        77       |       912      |       160      |     75.5%    |
-|      3      |     89.7%   |     62.8%   |    86.6%   |        25       |        96       |       893      |       162      |     72.8%    |
-|      4      |     89.5%   |     62.3%   |    85.6%   |        27       |        97       |       892      |       160      |     72.1%    |
+|           Model        |   Accuracy  |  Precision  |   Recall   |   F-score   |
+|:----------------------:|:-----------:|:-----------:|:----------:|:-----------:|
+|      TaggerOne         |     47.1   |     67.5%   |    85.6%   |     45.4      | 
+|      MedLinker         |     48.4   |     62.8%   |    86.6%   |     49.2      | 
+|   PubMedBERT+SapBERT   |      -     |     62.3%   |    85.6%   |     50.8      | 
+|      LRR               |     89.5%  |     63.0%   | **52.0**   |     57.0      | 
+|      *Our model*       |     73.8   |  **76.3**   |    51.4    |   **61.4**    |
+
+
+
+TaggerOne  &  & 47.1 & 43.6 
+MedLinker  &  & 48.4 & 50.1 
+PubMedBERT+SapBERT  &  &  &  
+LRR &  & 63.0 & \textbf{52.0} 
+
 
 
 - BC5CDR
 
-| WINDOW_SIZE |   Accuracy  |  Precision  |   Recall   | False negatives | False positives | True negatives | True positives |  F1 measure  |
-|:-----------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|:--------------:|:--------------:|:------------:|
-|      2      |     91.2%   |     67.5%   |    85.6%   |        27       |        77       |       912      |       160      |     75.5%    |
-|      3      |     89.7%   |     62.8%   |    86.6%   |        25       |        96       |       893      |       162      |     72.8%    |
-|      4      |     89.5%   |     62.3%   |    85.6%   |        27       |        97       |       892      |       160      |     72.1%    |
+|    Model      |   Dataset    |   F-score   |
+|:-------------:|:------------:|:-----------:|
+|    ScispaCy   |     BC5CDR   |     84.1    |
+|    SciBERT    |     BC5CDR   |     90.0    |
+|    BioBERT    |     BC5CDR   |     90.3    |
+|    SapBERT    |     BC5CDR-d |  **93.5**   |
+|  *Our model*  |     BC5CDR   |     73.0    |
 
 ## :high_brightness: Acknowledgements
 + This work was funded by the Ministry of Science and Technology scholarship for STEM research students.
