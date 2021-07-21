@@ -1,4 +1,4 @@
-# Hebrew Contextual Relevance Model For UMLS Entity Linking Using BERT
+# Contextual Relevance Model For UMLS Entity Linking Using BERT
 
 ## :dart: Goal
 Linking terms to Unified Medical Language System (UMLS) entities can benefit text-analytics methods and make information retrieval and analysis 
