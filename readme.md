@@ -15,12 +15,12 @@ Our proposed end-to-end NEL model consists of four consecutive stages: (1)  **mu
 ![Alt text](pipeline.jpg?raw=true "Full pipeline overview")
 
 ## :bar_chart: Results
-- Camoni corpus ([MDTEL](https://github.com/yonatanbitton/mdtel))
+- Camoni Corpus
 
-|       Model |   Community |  Accuracy%  | Precision% |   Recall%       |  F1 measure%    |
-|:-----------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|
-|  MDTEL      |  Diabetes   |  **97.0**   |    71.0    |  **75.0**       |    73.0         |
-|*Our model*  |  Diabetes   |    89.2     |  **98.3**  |    73.8         |    **84.3**     |
+|       Model                                           |   Community |  Accuracy%  | Precision% |   Recall%       |  F1 measure%    |
+|:-----------------------------------------------------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|
+|  [MDTEL](https://github.com/yonatanbitton/mdtel)      |  Diabetes   |  **97.0**   |    71.0    |  **75.0**       |    73.0         |
+|*Our model*                                            |  Diabetes   |    89.2     |  **98.3**  |    73.8         |    **84.3**     |
 
 
 |       Model |   Community |  Accuracy%  | Precision% |   Recall%       |  F1 measure%    |
