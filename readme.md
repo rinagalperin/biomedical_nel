@@ -28,20 +28,11 @@ Our proposed end-to-end NEL model consists of four consecutive stages: (1)  **mu
 
 |           Model        |   Accuracy  |  Precision  |   Recall   |   F-score   |
 |:----------------------:|:-----------:|:-----------:|:----------:|:-----------:|
-|      TaggerOne         |     47.1   |     67.5%   |    85.6%   |     45.4      | 
-|      MedLinker         |     48.4   |     62.8%   |    86.6%   |     49.2      | 
+|      TaggerOne         |     47.1   |     67.5%   |    85.6%   |     43.6      | 
+|      MedLinker         |     48.4   |     62.8%   |    86.6%   |     50.1      | 
 |   PubMedBERT+SapBERT   |      -     |     62.3%   |    85.6%   |     50.8      | 
 |      LRR               |     89.5%  |     63.0%   | **52.0**   |     57.0      | 
 |      *Our model*       |     73.8   |  **76.3**   |    51.4    |   **61.4**    |
-
-
-
-TaggerOne  &  & 47.1 & 43.6 
-MedLinker  &  & 48.4 & 50.1 
-PubMedBERT+SapBERT  &  &  &  
-LRR &  & 63.0 & \textbf{52.0} 
-
-
 
 - BC5CDR
 
