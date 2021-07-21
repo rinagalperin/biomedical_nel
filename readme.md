@@ -21,8 +21,16 @@ Our proposed end-to-end NEL model consists of four consecutive stages: (1)  **mu
 |:-----------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|
 |  MDTEL      |  Diabetes   |  **97.0**   |    71.0    |  **75.0**       |    73.0         |
 |*Our model*  |  Diabetes   |    89.2     |  **98.3**  |    73.8         |    **84.3**     |
+
+
+|       Model |   Community |  Accuracy%  | Precision% |   Recall%       |  F1 measure%    |
+|:-----------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|
 |  MDTEL      | Depression  |  **99.0**   |   77.0     |    73.0         |    75.0         |
 |*Our model*  | Depression  |   90.8      |   97.7     |  **76.9**       |    **86.0**     |
+
+
+|       Model |   Community |  Accuracy%  | Precision% |   Recall%       |  F1 measure%    |
+|:-----------:|:-----------:|:-----------:|:----------:|:---------------:|:---------------:|
 |  MDTEL      | Sclerosis   |  **98.0**   |   82.0     |  **71.0**       |    76.0         |
 |*Our model*  | Sclerosis   |   86.3      | **98.3**   |    67.8         |    **80.3**     |
 
