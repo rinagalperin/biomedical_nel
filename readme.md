@@ -1,4 +1,4 @@
-# Contextual Relevance Model For Cross-Lingual UMLS Entity Linking Using UMLS Dictionary Fine-Tuning
+# Cross-Lingual UMLS Named Entity Linking Using UMLS Dictionary Fine-Tuning
 
 ## :dart: Goal
 Linking terms to Unified Medical Language System (UMLS) entities can benefit text-analytics methods and make information retrieval and analysis 
