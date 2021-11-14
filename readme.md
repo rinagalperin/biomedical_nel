@@ -40,9 +40,8 @@ Our proposed end-to-end NEL model consists of four consecutive stages: (1)  **mu
 |:----------------------------------------------------:|:-----------:|:-----------:|:----------:|:-----------:|
 |      TaggerOne                                       |             |     47.1    |    43.6    |     45.4    | 
 |      MedLinker                                       |             |     48.4    |    50.1    |     49.2    | 
-|   PubMedBERT+SapBERT                                 |             |             |            |     50.8    | 
-|[LRR](https://arxiv.org/abs/2101.10587)               |             |     63.0    | **52.0**   |     57.0    | 
-|      *Our model*                                     |     73.8    |  **76.3**   |    51.4    |   **61.4**  |
+|[LRR](https://arxiv.org/abs/2101.10587)               |             |     63.0    |    52.0    |     57.0    | 
+|      *Our model*                                     |     73.8    |  **76.4**   |  **55.5**  |   **64.3**  |
 
 - BC5CDR
 
