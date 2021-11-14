@@ -1,4 +1,4 @@
-# Contextual Relevance Model For UMLS Entity Linking Using BERT
+# Contextual Relevance Model For Cross-Lingual UMLS Entity Linking Using UMLS Dictionary Fine-Tuning
 
 ## :dart: Goal
 Linking terms to Unified Medical Language System (UMLS) entities can benefit text-analytics methods and make information retrieval and analysis 
@@ -57,4 +57,4 @@ Our proposed end-to-end NEL model consists of four consecutive stages: (1)  **mu
 + This work was funded by the Ministry of Science and Technology scholarship for STEM research students.
 
 ## :email: Contact
-- rinag@post.bgu.ac.il
+- rinagalperin@gmail.com
